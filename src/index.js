@@ -19,6 +19,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // core components
 import Admin from "layouts/Admin.js";
@@ -29,17 +31,28 @@ import "assets/css/material-dashboard-react.css?v=1.9.0";
 import Login from "./views/User/Login";
 import Signup from "./views/User/SignUp";
 
+const token = localStorage.getItem('token');
+
 const hist = createBrowserHistory();
 
 ReactDOM.render(
-  <Router history={hist}>
-    <Switch>
-      <Route path="/login" component={Login} />
-      <Route path="/signup" component={Signup} />
-      <Route path="/admin" component={Admin} />
-      <Route path="/rtl" component={RTL} />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </Router>,
+  
+    <Router history={hist}>
+      <Switch>
+      { token == null ? 
+        <>
+        <Route path="/signup" component={Signup} />
+        <Route path="/login" component={Login} />
+        <Redirect from="/" to="/login" /> 
+        </>
+        :
+        <>
+        <Route path="/admin" component={Admin}   />
+        <Redirect from="/" to="/admin/dashboard" />
+        </>
+        } 
+      </Switch>
+      <ToastContainer />
+    </Router>,
   document.getElementById("root")
 );

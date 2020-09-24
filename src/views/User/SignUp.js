@@ -33,6 +33,7 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 
+import { authSignup } from "./user_api"
 
 import styles from "assets/jss/material-dashboard-react/views/User.js";
 
@@ -40,7 +41,19 @@ const useStyles = makeStyles(styles);
 
 
 export default function SignUp() {
-    const classes = useStyles();
+    const classes = useStyles();;
+
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+
+
+    const onSubmit = () => {
+    
+      authSignup(username, email, password, passwordConfirm);
+      
+    };
 
   return (
     <div>
@@ -55,6 +68,10 @@ export default function SignUp() {
                     formControlProps={{
                       fullWidth: true
                     }}
+                    inputProps={{
+                      value: username,
+                      onChange: (e) => setUsername(e.target.value)
+                    }}
                   />
                 <CustomInput
                     labelText="Email"
@@ -62,13 +79,10 @@ export default function SignUp() {
                     formControlProps={{
                       fullWidth: true
                     }}
-                  />
-                <CustomInput
-                    labelText="Address"
-                    id="address"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
+                    inputProps={{
+                      value: email,
+                      onChange: (e) => setEmail(e.target.value)
+                  }}
                   />
                 <CustomInput
                     labelText="Password"
@@ -77,9 +91,27 @@ export default function SignUp() {
                     formControlProps={{
                       fullWidth: true
                     }}
+                    inputProps={{
+                      value: password,
+                      onChange: (e) => setPassword(e.target.value)
+                  }}
+                  
+                  />
+                  <CustomInput
+                    labelText="Password Confirm"
+                    id="passwordConfirm"
+                    type="password"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      value: passwordConfirm,
+                      onChange: (e) => setPasswordConfirm(e.target.value)
+                  }}
+                  
                   />
                 <CardFooter stats>
-                    <Button color="success">Sign up</Button>
+                    <Button color="success" onClick={() => onSubmit()}>Sign up</Button>
                 </CardFooter>
             </Card>
    

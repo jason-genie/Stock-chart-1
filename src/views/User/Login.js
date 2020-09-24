@@ -23,11 +23,9 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import { Link, withRouter } from "react-router-dom";
-
+import { authLogin } from "./user_api";
 
 import styles from "assets/jss/material-dashboard-react/views/User.js";
-
-import { authLogin } from "../../api/actions/auth"
 
 const useStyles = makeStyles(styles);
 
@@ -36,13 +34,11 @@ export default function Login() {
     const classes = useStyles();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
     const onSubmit = () => {
 
-        const mapDispatchToProps = dispatch => {
-            return {
-              login: (username, password) => dispatch(authLogin(username, password))
-            };
-          };
+      authLogin(username, password)    
+      
     };
   return (
     <div>

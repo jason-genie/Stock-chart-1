@@ -21,7 +21,7 @@ import Button from "components/CustomButtons/Button.js";
 
 import { Link, withRouter } from "react-router-dom";
 
-
+import { signOut } from "../../views/User/user_api"
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
 const useStyles = makeStyles(styles);
@@ -30,6 +30,9 @@ export default function AdminNavbarLinks() {
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
+
+  const token = localStorage.getItem('token');
+
   const handleClickNotification = event => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
@@ -209,18 +212,23 @@ export default function AdminNavbarLinks() {
                       Settings
                     </MenuItem>
                     <Divider light />
-                    <Link to="/login"><MenuItem
+                    
+                    {token == null ? (
+                      <Link to="/login"><MenuItem
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
                       LogIn
                     </MenuItem></Link>
-                    <Link to="/signup"><MenuItem
-                      onClick={handleCloseProfile}
+
+                    ) : (
+                      <Link to=""><MenuItem
+                      onClick={() => signOut()}
                       className={classes.dropdownItem}
                     >
-                      SingUp
+                      SingOut
                     </MenuItem></Link>
+                    )}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

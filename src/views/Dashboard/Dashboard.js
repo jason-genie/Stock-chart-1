@@ -19,7 +19,6 @@ import Cloud from "@material-ui/icons/Cloud";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
 import Tasks from "components/Tasks/Tasks.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import Danger from "components/Typography/Danger.js";
@@ -55,7 +54,6 @@ export default function Dashboard() {
   
   const classes = useStyles();
   const [dataPoints1, setDP1] = useState();
-
   const [isLoaded, setLoad] = useState(false);
 
   useEffect(() => {
