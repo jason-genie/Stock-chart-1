@@ -1,0 +1,19 @@
+hi! 
+it has places in Asia only. 
+so, when you click anywhere on the map in Aisa, it should search for places around that clicking point. 
+
+then it should return and display those places. 
+
+now, it does not return anything
+
+it's using elasticsearch to search. 
+
+i checked server. elasticsearch is working.
+
+so, pls check why it does not get any result.
+
+
+
+
+
+

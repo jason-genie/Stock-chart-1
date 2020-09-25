@@ -1,0 +1,1114 @@
+hi!
+
+the doc opened describes a bit more details. pls review them all.
+
+at the end of this doc, i give a few links to some repos that should be helpful!
+
+i have copied stock symbol list. we use td-ameritrade API to get stock prices. 
+
+this is TD API docs. 
+
+these repos may be helpful. 
+
+
+you can review them all
+
+only take what's helpful for you to complete this project. 
+
+
+Good
+
+From now, let's contact with skype. ol?
+ok. my id: rochor, with penguile profile pic
+
+
+this page tells a tutorial of implementing a simple trading bot. i guest we can do a similar one using TD API. 
+
+
+Yes, 
+
+Please accept in Skype. Freddy G
+
+hi, 
+are you here?hi
+
+what?
+any issue?
+
+now
+
+computer speed is too low.
+i belive we just need to restart it
+
+let me check
+
+this computer should be very fast. 
+
+before  restart, let's fix td password
+ok?
+
+it's alredy given. the token. 
+
+
+here it is. 
+
+i copied from TD dashborad. 
+
+i guess this is the only thing needed. 
+
+
+it seems computer is healthy. memory not fully used at all. 
+
+
+anyway, we can close 
+
+maybe, reoted
+
+you can close any software that is not needed. pls try
+
+otherwise, we can restart
+
+or you can restart
+
+ok
+
+now, i am going to review 
+are you here?
+
+
+
+where is node.js source?
+I need to install it.
+i don't know
+
+why using node.js?
+I mean I need npm
+So, i have to install node server
+go ahelsd.
+there may be other softearw you need
+so, just install them. 
+
+I need more detail requirments of this project  to develop correctly.
+
+Do you see?
+
+what?
+
+the server is up?
+\
+server is python 
+ok
+good! you're almost done! 
+just move the plot to user after login. 
+and may be display in several other menus
+then connect td api. then it's almost done.
+
+
+Yeah, ok 
+I need more detail 
+requir
+
+it's in the doc
+btw, would you pls show me how to run this from start?
+
+for example, when i just copied this code to a new computer/server, then i need to run it.
+
+
+yeah, you cna readme. in the proejct
+great! let me take a quick look
+
+ok. will try that later. 
+
+it seems that need some re-written to make it easier to follow step by step
+
+anyway, let m eshow you the spec
+
+
+
+
+see? i have downloade the symbol list. 
+
+yes
+
+pls read this 2-6
+
+I want to know  in more detail 
+
+one good reference is this
+tradingview.com
+see? here, enter a symbol, it can display the price/volume plot. 
+
+it'll be great if you can do exactly the same as this UI. 
+
+but if it's difficult, just implement what's possible. 
+
+ok  
+
+I will research this in details form now.
+
+ANd do you mind UI that I  developed?
+
+you mean, this one?
+all include this.
+i don't get it. 
+
+um~ I am not sure taht I am going to dev like this.
+as i said, it'll be great if that tradingview UI can be done. but we need to minimize our time of the development. 
+
+so, just use what you have and develop. 
+
+
+
+
+OK, I will start deve again from now.
+
+just a sec. 
+
+on this page, it's admin's dashboard.
+
+so, this is for admin. 
+
+can i register as a normal user, then i can enter a page like the tradinvview page?
+
+No yet, do you want front-end page too?
+
+yes. the front-end page is the focus. the backend page is of lowest priority. you actually don't need to work on this backend page much. 
+
+in the backend page, maybe we can we the list of users. 
+that should be all. 
+
+To develope backend and front-end both, it's big task 
+i see! then i am a bit confused. how do you do here?
+
+you also need to sign in?
+then, it'll display this page?
+
+i don't get it. 
+
+I developd signin and signup page 
+
+this is good enough!
+so, after user signs in, which page will be opened?
+
+yea, but,I didn't connect this and api until yet.
+But Ialready made apis .
+ok. this is what i'm saying. 
+after user signs in, it can display the stock chart page. 
+
+yes
+
+If your want front-end and backend , you need to detail doc for them.
+
+no both front-end and backend.
+
+
+just a sec. 
+
+we just need one. 
+
+
+now, anyway, the user needs to sign in, right?
+
+
+yeah
+,after user signs in, is that front-end or backend?
+
+
+yes.
+then, you want just this pages>
+
+is this page front end or back end?
+
+i'm confused. i don't know what you mean by front or backend
+
+
+for exampel, tradingview, the page that we can see is front-end page.
+And the page that admins manage, we can not  see,
+this is back end page.
+
+so, basically, two pages! right? 
+
+yes, 
+so, what's this existing page now? 
+
+http://localhost:3000/admin/dashboard
+
+is this front-end or backend?
+this is back end page.
+
+so, after user logs in, he will see the backend page?
+
+yes
+ok. then all users can view this backend page!
+there's no issue with this at all.
+
+we don't need a front-end page. 
+
+
+right?
+
+If your want it, I can along your suggestions.
+
+
+no. it's ok. let me suggest this. 
+
+we will just use this backend page. but with some role control.
+
+
+
+see?
+
+the left menu. we can control who can see the User list. 
+
+
+only the admin role can see the User List page. 
+
+yes
+the focus should be one the Stock Chart page obviously, it should follow the spec. 
+
+And are there any other pages except them.
+
+
+pls check the word spec. you can decide if you want to implement them in different pages, or in one single page. 
+
+
+i guest you can implement them all in one page with two or three sections, or divide into two or three pages
+
+no much difference. 
+
+
+you can see which one is easier to implement. 
+
+
+I will divide
+
+ok. you can divide them into different pages, or different tabs. 
+
+anyway, no much difference to me. 
+
+we just need these functions implemented. 
+
+Good
+btw, on this admin page, would you please remove those that are not needed? 
+
+yes, I am going to remove 
+
+ok. them
+
+do you have other issues to discuss? or it 
+send me this folder "stock" by skype
+you can open it any time on this computer\
+it's always opened
+
+no ONE will touch this computer
+
+
+I am going to to look on my com indetail.
+
+
+btw, are you going to use mysql as db?
+
+I am going to use sqlite3
+this is better than mysql  to use for you.
+
+
+but then we need to install another db on the computer. 
+
+no need to install.
+i don't gett it! why no need to install
+
+sqlite3 doesn't need to install server
+
+We canuse this easily
+
+i don't get it. it's a db. why no need to install?
+
+we just need to install python server.
+Then, we canmanage db.
+i see! so in python server, it already contains db?
+
+yeah 
+
+ok! 
+
+with this sqllite3, how many users can it support?
+like mysql
+don't worry about that
+
+
+ok! good. seems very easy to main. 
+
+can also backup db and restore?
+
+yes, of course
+
+ok! interesting. 
+
+ok. pls continue. 
+
+yes, send 
+
+
+
+you mean, this folder?
+
+
+
+yes
+
+what's that stock_screener?
+that's too big.
+
+where is pdf?
+what?
+btw, where's the project folder you git?
+ok. 
+
+got it. 
+
+
+require
+
+that's all?
+
+yes
+ok
+
+you can see from now
+
+first,let's create your account
+
+ok. ready to create?
+
+enter your name
+
+ok. so, not working yet
+nw, I research the concept about stock.
+I 
+ok. 
+
+btw, when i register a new user, can i just enter the account/pw/email in the webpage?
+
+yes.
+enter password 
+
+already enteredtwo password are same?
+yes
+not working
+you can try to sign up a new user
+there is somthing  issue.
+I will fix this
+
+try again
+
+now working!
+
+I struggle a little to make stock screener
+
+So, I need toresearch 
+aboutthat
+
+u.
+
+i understand! that's why those github repos may help!
+
+they should provide good references!
+
+you can check them
+
+yeah, you mean stock_sreener project of python??
+
+i mean, yetshese three
+not sure which one. you may check
+
+I will check in more details.
+
+Then, no questions about changes?
+
+May I go back to work again?
+
+ok. pls 
+
+good bye.
+again, we can talk at this fixed time everyday when there's some progres. 
+
+also, if there's any issue, do chat with me on skype. i'll be always available to help. 
+
+Yes, ok
+ you can update user info.
+ 
+ can i enter a symbol and see stock price history?
+ 
+ no yet,tomorrow, I will make them
+ ok. 
+
+hi! so, all stock related codes are in this folder?
+
+I changed all backend code.
+The structure was changed,
+
+
+
+see? not working. now, it's all empty. 
+
+
+what is this price below? 
+
+are they loaded from some csv file?
+yes,  I will add extra api..
+ok
+
+
+here, for portofolio page, the user should be able to add/remove multiple portfolios. 
+
+for each porfolio, it should allow add/remove stocks. 
+
+right?
+
+yes, Isee.
+I will add this functions.
+
+
+it's also described in the doc. 
+5. a. 
+see?
+yes, I already saw. 
+ok
+I
+
+so the only funtion that was implemented is updating user profile.
+maybe, there is somthing issue,
+
+ok. right. 
+
+pls check. also, pls focus more on the stock related api/functions. 
+
+I will fix this soon.
+I know the reason.
+
+ok
+
+
+I  will this  on my com.
+ok
+
+Sorry, about something  error
+ok. 
+
+And  execuse, Coudle you send  me 200 in advance??
+
+we already discussed this. will follow that. 
+
+pls complete the first milestone asap. 
+
+
+so far, there's still no progress 
+
+
+first miestone?
+
+
+see??
+
+I dont understand.
+what???
+first milestone ?
+it's the selected paragraphs in the spec. 
+
+you mean stock chart?
+
+yes.
+
+ok
+display the price based on price/volumne data from TD Ameritrade. 
+
+pls do this asap. 
+
+it's been several days. 
+
+nothing yet. 
+
+I will do through your  suggestion.
+ok. 
+
+can you do it today?
+stock chart?
+
+yes. based on real data. 
+
+this chart should be based on the real data after entering the stock symbol. 
+
+yes, I will complete this at first.
+
+ok
+howabout ui?
+
+you can follow tradingview.com for the UI.
+
+https://www.tradingview.com/chart/?symbol=NASDAQ%3AAAPL
+
+follow this one. 
+
+Doi have to make all widgets 
+
+no
+
+only make those that's required in the doc. 
+
+
+yes,  I see
+
+
+
+see?
+yeah
+keep only what's needed in the spec.
+
+yes, I will do 
+
+ok. possible to complete the first milestone today? 
+I will try.
+ok. let me know when it's ready. 
+
+yeah,
+then, I will go back soon .
+
+ok.
+
+see??
+
+
+why is the app so slow?
+
+i don't think it's issue with the computer. 
+
+this app is so slow
+
+also, is there anything that can simply run as web service?
+
+why do you always need to use cmd to start the server
+
+I dont get what you mean
+
+Do you want me to deploy app 
+
+no. this app is too slow!!
+
+now, web server is down
+
+First of all, what we are seeing right now is not a web server
+
+This is the common way developers open their web application on their brosers
+
+If you want to access it online, you need to provide dedicated server where I can upload current resources.
+
+
+no need. this compouter should have a virtual server env configured. it should stay in the background
+
+also, after i close this CMD windows, the computer is back to normal!
+
+when the CMD windows to start that NPM/webserver is opened, the app's fan keep on running!
+
+that's a terrible server. 
+
+what's this server?
+
+is it django?
+
+Yes. You asked me to do that using Python framework
+
+And I am not sure why you want this app constantly running on the current device. That's not how web applications work.
+
+what do you mean?
+
+I mean - I am not sure what you exactly want me to do.
+
+Do you want to be able to access localhost:3000 every time when you start windows, without running npm start?
+yes. it should run as a background service. then it's a virtual server on this computer
+
+
+There is nothig like "virtual server" for an individual PC. In order to make something work on background services, we need a VPS, not a PC.
+
+And most importantly, there is no point in running this app permanently only on your computer
+
+this is for development. and we need to run it on this computer
+
+see???
+
+i don't know what you're doing
+
+this is so typical for web development. 
+
+What is so typical?
+
+
+In the web development, backend codebasechanges frequently. Developers don't need their backend running in the static environment.
+
+But if you want it to be running on a windows machine permanently, I will see what I can.
+
+I was confused at the first because your requirements didn't cover 
+
+but this is so basic! you always need to setup the env for a project!
+
+I do of course, but I do set up the environemnts on the dedicated servers
+, 
+
+you can consider this computer as a dedicated server. no difference. 
+
+WE CAN SIMPLY ALLOW REMOTE USERS to access this computer. then it's a dedicated server. 
+
+As I said, I will see what i can do.
+
+I usually worked with dedicated servers that are running on Linux, Ubuntu, Debian, etc.
+
+Does your comupter run on Windows Server OS?
+no. it's just win 10. 
+
+
+It's not even a server OS?
+
+
+Anyway, let me figure that out. I never deployed python projects on the user-level windows systems. (because there is no need to)
+
+I don't know if it's even possible. Let me take a look and get back to you.
+
+come on. this is so basic. 
+
+
+Look here. Are you a developer by yourself?
+
+Python backend is supposed run on the server systems. Not on a personalPC
+it  does not matter. 
+
+it should run on PC as well!!
+
+with PC, it has relatively smaller amount of resouces, which is good. it will ensure you don't developer terrible code that consume too much resources. 
+
+
+Did you ever run a server on a Windows 10 home ssytem?
+
+Maybe possible for temporary development purposes but not for long-term uses.
+
+That's why we have Windows SErver systems out there - which is quite differenht from amateur user OS.
+
+Something like Windows Server 2019
+
+Installing backend on the non-server systems is NOT a basic work. Ask every developer you can find.
+
+Actually, Windows Servers are not popular in these days. Python servers are usually deployed on the Ubuntu/Linux servers.
+
+But for you, I will see what I can do on your computer. To make current server running background.
+
+Does that sounbd good to you?
+
+
+ok. pls. it should be quite straighforward. 
+in PHP website dev, there're many softare with one click to set up env in windows.
+
+
+
+similar should exist for python. 
+
+
+I think you are implying XAMPP 
+
+yes. xampp/ winwamp
+
+
+LOL
+
+That is a development purpose, not a production one
+
+
+
+But if you want that, I can try. 
+
+Because of its developmental nature, we don't usually use XAMPP for the python tests.
+
+I am too quite familiar with xampp for PHP backends.
+
+OK. Enough talk.
+
+I will look a little bit into this. Need to step away as well.
+
+okW1i ll let you know once I am ready.
+
+ok. 
+
+for the existing stock, it can get price and volumne now. need to allow user to select if it's monthly/weekly/daily/hourly. 
+
+You said that monthly / weekly .. is nned to stock screener
+
+
+no only in the stock chart
+
+would you pls run the web server again? so that i can explain
+here, on this chart. now, it seem it's based on each minute. 
+
+
+it should allow selection of hourly/weekly/monthly. 
+
+yeah, Isee
+
+in odc, you  mentioned that this is need to stock screener
+but , I will try.
+
+ok. pls
+this is a good first step. at least, now you know, the TD API is working. 
+
+the remaining should be straightforward. just a matter of processing these stock price/volumne data, and display them. 
+
+I used Td apis with your key.
+
+good. 
+
+And do you need to hourly/ monthly/ .. in the stock screener too??
+
+yes. it can be based on hourly price/monthly/weekly/
+
+it's needed. 
+
+yeah, i see
+
+it should be clear now. pls continue. 
+
+yes
+
+
+And I want you to give me 200 in a advance?
+
+as agoreed from the very beginning, once the first milestone is complete, i'll send you 100. 
+
+no worries about the payment. you can check my profile on freelancer.com, i always pay timely. i have all 5 star rating from all the past collaborators. 
+
+yeah, I  saw that.
+I completed first mile. but you added suggestions.
+
+in the plot, it has those weekly/monthly/hourly
+anyway, this should be quick change. let me know when it's done. then i'll send you the 100. 
+
+no worries about that. 
+
+ok. pls continue. 
+
+keep the exising based on minute. 
+
+just need  minute/hourly/ daily/weekly/ monthly?
+see?
+
+You mean remove the based on minute?
+
+i mean, keep it!!
+
+just add?
+
+yes. 
+
+add five buttons. 
+
+minute
+hourly
+daily/hourly
+weekly 
+monthly 
+
+selecting one button, will display the stock price with that interval. 
+
+yes
+
+it should be clear now?
+
+I will addd this soon.
+ok. 
+
+pls. let me know when it's ready. 
+
+bye for now. 
+
+And server deploying is not late in project finished
+
+so, I will do this after 
+
+ok! your choice. 
+
+good
+pls continue. bye for now. 
+
+
+bye
+
+
+
+do yo
+
+
+btw, what's the dotted connected line? is that the average price?
+
+yea
+
+in some places, it's off the price range. maybe you use another formula
+
+I can control the range.
+
+ok!
+for the price data, it loads from jul 2019. possible to load more when we see weekly/monthly? 
+
+yeah
+
+I can change them
+ok. pls!
+besides, pls also enable this zoom in /out. this can be quickly enabled? 
+
+like this
+
+see?
+
+what? 
+this zoom out/in
+
+ok! good. already there!
+
+
+
+then just need to get more data with weekly/monthly
+
+
+then this is done. 
+
+we can move on with the stock screener. 
+
+o
+i believe the following will be much smoother. 
+
+and how many range of weekly /monthly?
+
+
+
+
+minute: -> one week data?
+hourly  -> one month? 
+daily -> two years
+weekly  -> 15 years or more. 
+monthly -> 20 years or more
+
+
+this looks reasonable? 
+
+
+
+I will try
+
+ok. pls
+
+
+one more thing
+when i click Stock Chart, it displays the complete symbol list. that's not necessary. 
+
+pls simply display the list of symbols added into the list. 
+
+so, only display the list we're interested. 
+
+but we can add a new symobol, or delete an existing symbol here. 
+
+
+Icompleted.
+let but minute - 5 days hourly -10days
+because limitation of apis.
+
+okg?
+good enough. of course we're limited by api. 
+
+
+The chart itself now is good enough!
+thanks
+
+this ONE> pls also take a quick look. it'll help the implementation. 
+
+
+besides, when you get price/volume data of a symbol, make sure to store them in our database!
+
+then, next time we run, we only need to get new data. avoid repeating download 
+
+this is important as well, so that we can minimize the # of API reads. 
+always store all data in our own db. 
+
+yes,maybe is take time.
+will this take time?
+
+for example, in our own db, for each symbol
+
+store
+
+minute: time duration 
+hourly : time duration  
+daily : time duration
+weekly  : time duration
+monthly : time duration
+
+so, when plotting stock price/volume, display data from our own db first. 
+meanwhile, update the corresponding data from API for the hourly or daily data. 
+
+does this make sense? 
+is this complicated to implement? 
+
+this will also make the following stock screening etc easier!
+
+
+another easier way.
+
+for all stock symbols in the watch list, get all data and store them in our db!
+
+then, we simply load data from our own db for stock chart/ screener/portfolios
+
+this should be easy to implement?
+
+
+You mean load all data include td-ameritrade api datas.
+??
+
+not all data. only all data for the symbols in the Watch list!
+
+For example, in the watch list, we may have five symbols, like AAPL, INTL, GOOG, TSLA, and QCOM
+
+I need symbol list.
+
+
+The symbol list will be added/removed, as we  discussed just now.
+
+see?
+
+these all symbol list?
+
+
+this list is maintained by the user! 
+the user may add one symbole, or he may add ten symbols. 
+
+let me make it clearer
+
+There're two list, the Watch List, and the Complete List. right? 
+
+
+You need to make requirmens about that.
+alright! this seems too complicated. let's do it this way.
+
+
+for all the symbols, let's store their daily and weely price in our database. 
+
+this should be clear? 
+
+ok this is new requriment
+
+no. this is for you to imiplement the stock Screener function! 
+it'll read data for all symbols, and then display the list of symbols that follow the criteria. In this case, you need to read price data and store them all in the database. then, you can process them, and sort them. 
+finally, you can display a list of symbols. 
+
+I can do screener function  no using  database.
+only use apis.
+
+no! this is terrible. then you need to read apis too much every day!
+
+imaging, we may run this stock screener app several times every day!
+
+then, there'll be too many api reads. 
+
+so, everyday, it should read data for all symbols and store in db. 
+
+then, all processing is based on data in db. 
+
+
+oh, ok I wll try for you.
+
+thx! this is the easiest way! becuase we need to implement a few stock screening method, as already described in the doc!
+
+so, when data are already downnloaded in our db, this will be easy!
+
+otherwise, you need to download data over and over again! this will be terrible. 
+
+yeahi see
+
+and I will do this 
+ no woryy
+ ok. thx. 
+ 
+ 
+ 
+ 
+ other problem
+ 
+ no. now, pls just change in "Stock chart" page, the All symbol list, to the customisable watch list. 
+ 
+ no, you didn't mention about this before, 
+ so I want to give  $ before 
+ 
+ ok! no problem. then let me write it down in the doc as extra task
+ sound good?
+ 
+ when it's all done, we can work on these extra task and then we can see how much would it be for those extra tasks. 
+ 
+ good?
+ 
+ yeah
+ 
+ when  are you going to send me ??
+ 
+ how do you want to be paid? 
+ 
+ 200$ 
+ 
+ this should be the first milestone. as said from the very beginning, 100 for each milestone completition. now we can consider first milestone is done. 
+ so i'll send you 100$ today. 
+ do you want you to use paypal? or another way? 
+ i know worldremit.com has the lowest fee! it's extremely fast as well. 
+ 
+ I I will use paypal.
+ ok. then pls send me an invoice
+ 
+ coneldllc@outlook.com
+ 100$ pls. 
+ 
+malang071003@sina.com 
+ ok. pls send me an invoice from paypal! after receiving the invoice, i'll pay. 
+ 
+ btw, are you from china?
+ 
+ i am supporting my parents  living in China
+ ok. do you speak chinese? 
+ 
+ My parents forced to learn it when I was a child.
+ lool. ok. 
+ But not  an expert
+ ok. so what's your native language? 
+ Spanish
+ ok! good
+ alright. it should be all clear now. pls continue the work. 
+ 
+ don't forget to send me the invoice. 
+ 
+ My parents are sleeping at the moments as it is early in the morning there
+ 
+NO WORRIES. i'll send payment once i receive the invoice. 
+
+Cool
+ok. bye for now. 
+
+look forward to the stock screening thing!
+
+No problem. GOOG
+ood night
+\ok. 
+
+this fils is too complex
+i know. will remove unnecessary content. 
+
+no, you can make new 
+
+ok. good idea. 
+
+
+now, it should be good. 
+
+
+ok
+this can be pushed into git. yeah
+ok. 
+
