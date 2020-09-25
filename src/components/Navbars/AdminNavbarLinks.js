@@ -84,7 +84,7 @@ export default function AdminNavbarLinks() {
         </Hidden>
       </Button>
       <div className={classes.manager}>
-        <Button
+        {/* <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
           simple={!(window.innerWidth > 959)}
@@ -100,7 +100,7 @@ export default function AdminNavbarLinks() {
               Notification
             </p>
           </Hidden>
-        </Button>
+        </Button> */}
         <Poppers
           open={Boolean(openNotification)}
           anchorEl={openNotification}
@@ -199,18 +199,12 @@ export default function AdminNavbarLinks() {
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
-                    <MenuItem
+                    <Link to="./user"><MenuItem
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
                       Profile
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseProfile}
-                      className={classes.dropdownItem}
-                    >
-                      Settings
-                    </MenuItem>
+                    </MenuItem></Link>
                     <Divider light />
                     
                     {token == null ? (

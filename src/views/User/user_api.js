@@ -14,6 +14,7 @@ export const authLogin = (username, password) => {
       .then(res => {
         const token = res.data.key;
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+        localStorage.setItem("username", username);
         localStorage.setItem("token", token);
         localStorage.setItem("expirationDate", expirationDate);
         toast("Successful!");
@@ -26,10 +27,11 @@ export const authLogin = (username, password) => {
   };
 
 
-  export const authSignup = (username, email, firstname, lastname, password, passwordConfirm) => {
+  export const authSignup = (username, email, password, passwordConfirm) => {
 
       axios
         .post("http://127.0.0.1:8000/rest-auth/registration/", {
+          
           username: username,
           email: email,
           password1: password,
@@ -55,3 +57,33 @@ export const authLogin = (username, password) => {
     localStorage.removeItem("expirationDate");
     window.location.assign('/login');
   };
+
+  export const getUser = (username) => {
+    const data = 
+    axios
+        .post("http://127.0.0.1:8000/current-user/", {
+          username: username,
+        })
+    return data;
+  }
+
+  export const updateUser = (userId, username, email, firstname, lastname, password) => {
+
+    axios
+      .post("http://127.0.0.1:8000/update-user/", {
+        userId: userId,
+        username: username,
+        email: email,
+        firstname: firstname,
+        lastname: lastname,
+        password: password,
+      })
+      .then(res => {
+        toast("Successful!");
+
+      })
+      .catch(err => {
+          toast("Update error!");
+      });
+
+};

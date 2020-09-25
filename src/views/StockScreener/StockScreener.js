@@ -11,7 +11,10 @@ import CardBody from "components/Card/CardBody.js";
 import Search from "@material-ui/icons/Search";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
+import { symbol } from "prop-types";
 
+import { tsvParse, csvParse } from  "d3-dsv";
+import { timeParse } from "d3-time-format";
 
 const styles = {
   cardCategoryWhite: {
@@ -48,11 +51,48 @@ const useStyles = makeStyles(styles);
 const stockScreener = require('@stonksjs/stock-screener');
 const filters = stockScreener.filters;
 
-const symbols = filters.map((filter) => stockScreener(filter));
-console.log(symbols);
+
+
+
+// stockScreener(filters[0]).then((response) => {debugger;});
+// const symbols = filters.map(async (filter) => await stockScreener(filter));
+// console.log(symbols);
 
 export default function TableList() {
+
+ 
   const classes = useStyles();
+  const [symbols, setSymbols] = useState([]);
+  const [stocks, setStocks] = useState([]);
+
+  useEffect(() => {
+    Promise.all(filters.map(filter => stockScreener(filter)))
+    .then(symbols => {
+      // setSymbols(symbols);
+      const data = symbols.reduce((cSymbols, symbol) => {
+        return cSymbols.concat(symbol)
+        // return cSymbols
+      });
+      setSymbols(data);
+    });
+
+    getData().then(data => {
+      // debugger;
+      setStocks(data);
+		})
+
+  }, []);
+
+  function getData() {
+    const promiseMSFT = fetch("https://financialmodelingprep.com/api/v3/ratios/AAPL?apikey=demo")
+      .then(response => response.json())
+      
+    // console.log(promiseMSFT);
+    return promiseMSFT;
+  }
+
+  console.log(stocks);
+
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -67,39 +107,37 @@ export default function TableList() {
             <Table
               tableHeaderColor="primary"
               tableHead={[
-                <div className={classes.searchWrapper}>
-                  <span>Ticker      </span>
-                    <CustomInput
-                      formControlProps={{
-                        className: classes.margin + " " + classes.search
-                      }}
-                      inputProps={{
-                        placeholder: "Search",
-                        inputProps: {
-                          "aria-label": "Search"
-                        }
-                      }}
-                    />
-                    <Button color="white" aria-label="edit" justIcon round>
-                      <Search />
-                    </Button>
-                </div>, 
-                "LAST",
+                // <div className={classes.searchWrapper}>
+                //   <span>Ticker      </span>
+                //     <CustomInput
+                //       formControlProps={{
+                //         className: classes.margin + " " + classes.search
+                //       }}
+                //       inputProps={{
+                //         placeholder: "Search",
+                //         inputProps: {
+                //           "aria-label": "Search"
+                //         }
+                //       }}
+                //     />
+                //     <Button color="white" aria-label="edit" justIcon round>
+                //       <Search />
+                //     </Button>
+                // </div>, 
+                "Symbol",
+                "date",
                 "CHG%",
                 "CHG",
-                "RATING",
-                "VOL",
+                " ",
+                " ",
                 "MKT CAP",
                 "P/E",
-                "EPS(TTM)",
-                "City", 
-                "Salary"]}
+                "EPS(TTM)",]}
                 
-              tableData={[
-                // symbols.map((symbol) =>  [symbol.toString(), "Niger", "Oud-Turnhout", "$36,738"])
-                ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738", "", "", "", "", "", "", ""],
-
-              ]}
+              tableData={
+                stocks.map(stock => [stock.symbol, stock.date, stock.assetTurnover, stock.capitalExpenditureCoverageRatio, stock.cashFlowCoverageRatio, stock.FlowToDebtRatio, stock.cashPerShare, stock.cashRatio, stock.companyEquityMultiplier, stock.currentratio])
+                // symbols.map(symbol => [symbol, "Niger", "Oud-Turnhout", "$36,738", "Niger", "Niger", "Niger", "Niger", "Niger", "Niger", "Niger"])
+              }
             />
           </CardBody>
         </Card>
