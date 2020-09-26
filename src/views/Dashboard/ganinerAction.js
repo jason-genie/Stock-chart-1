@@ -27,8 +27,8 @@ export function fetchSymbol(){
       return symbol;
   }
 
-export function fetchPrice(symbol){
-    const price = fetch(`https://api.tdameritrade.com/v1/marketdata/${symbol}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&=`)
+export function fetchPrice(symbol, periodType, period, frequencyType, frequency){
+    const price = fetch(`https://api.tdameritrade.com/v1/marketdata/${symbol}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=${periodType}&period=${period}&frequencyType=${frequencyType}&frequency=${frequency}`)
     .then(chart => chart.json())
 
     return price;

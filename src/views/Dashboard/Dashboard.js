@@ -68,24 +68,31 @@ export default function Dashboard() {
   const classes = useStyles();
   const [dataPoints1, setDP1] = useState();
   const [isLoading, setLoading] = useState(true);
-  const [gainer, setGainer] = useState();
-  const [symbolName, setSymbolName] = useState('');
+  const [symbolName, setSymbolName] = useState('A');
   const [symbols, setSymbols] = useState([]);
-  const [temp, setTemp] = useState([]);
+  const [selecVal, setSelectVal] = useState(0);
+  const [period, setPeriod] = useState('1');
+  const [periodType, setPeriodType] = useState('day');
+  const [frequency, setFrequency] = useState('1');
+  const [frequencyType, setFrequencyType] = useState('minute');
+  const [initaial] = useState([{perType: "day", period: "1", freType : "minute", frequency: "1"},
+                                {perType: "day", period: "2", freType : "minute", frequency: "30"},
+                                {perType: "year", period: "1", freType : "daily", frequency: "1"},
+                                {perType: "year", period: "1", freType : "weekly", frequency: "1"},
+                                {perType: "year", period: "2", freType : "monthly", frequency: "1"}]);
 
   useEffect(() => {
 
     setLoading(true);
 
     fetchSymbol().then(data => {
-      console.log("data:: ", data);
+      // console.log("data:: ", data);
       setSymbols(data.map(s=> s.symbol));
       setLoading(false);
     });
 
-    fetchPrice("A").then(price => {
+    fetchPrice(symbolName, periodType, period, frequencyType, frequency).then(price => {
       setDP1(price.candles);
-      setTemp(price.candles);
       setLoading(false);
     });
 
@@ -96,6 +103,7 @@ export default function Dashboard() {
     // setSymbolName(symbol);
     var filter, symbol, ul, li, a, i;
     symbol = document.getElementById("symbolSearch").value;
+    setSymbolName(symbol);
     filter = symbol.toUpperCase();
     ul = document.getElementById("symbolMenu");
     li = ul.getElementsByTagName("li");
@@ -112,8 +120,8 @@ export default function Dashboard() {
   function symbolItem(symbol){
     setLoading(true);
     document.getElementById("symbolSearch").value = symbol;
-
-    fetchPrice(symbol).then(price => {
+    setSymbolName(symbol);
+    fetchPrice(symbol, periodType, period, frequencyType, frequency).then(price => {
 
       if(price.candles.length == 0){
         toast("No data about this symbol!")
@@ -126,7 +134,32 @@ export default function Dashboard() {
     });
   }
 
-  console.log("chart datapoints: ", dataPoints1);
+  function setPeriodData(symbol, e){
+    setLoading(true);
+    setSelectVal(e.target.value);
+    const perType = initaial[e.target.value].perType;
+    const per = initaial[e.target.value].period;
+    const freType = initaial[e.target.value].freType;
+    const fre = initaial[e.target.value].frequency;
+
+    fetchPrice(symbol, perType, per, freType, fre).then(price => {
+      if(price.candles.length == 0){
+        toast("No data about this period!")
+      }
+      else{
+        // console.log("aaa", price.candles);
+        setDP1(price.candles);
+        console.log("success");
+      }
+      setLoading(false);
+    });
+    setPeriodType(perType);
+    setPeriod(per);
+    setFrequency(fre);
+    setFrequencyType(freType);
+  }
+
+  // console.log("chart datapoints: ", dataPoints1);
 
   return (
 
@@ -173,6 +206,15 @@ export default function Dashboard() {
               </div>
           </GridItem>
           <GridItem xs={12} sm={12} md={9}>
+            <div>
+              <select value={selecVal}  onChange={(e)=>setPeriodData(symbolName, e)} className="selecting-period">
+                <option value="0">minute</option>
+                <option value="1">hourly</option>
+                <option value="2">daily</option>
+                <option value="3">weekly</option>
+                <option value="4">monthly</option>
+              </select>
+            </div>
             <div style={{marginTop : "100px"}}>
               {dataPoints1 && <TypeChooser>
                 {type => <Chart type={type} data={dataPoints1} />}
