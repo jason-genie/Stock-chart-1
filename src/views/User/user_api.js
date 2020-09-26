@@ -21,7 +21,7 @@ export const authLogin = (username, password) => {
         window.location.assign('/dashboard');
       })
       .catch(err => {
-        toast("User sign in error!");
+        toast(err);
     });
   
   };
@@ -47,7 +47,7 @@ export const authLogin = (username, password) => {
 
         })
         .catch(err => {
-            toast("User sign up error!");
+            toast(err);
         });
 
   };
@@ -80,6 +80,7 @@ export const authLogin = (username, password) => {
       })
       .then(res => {
         toast("Successful!");
+        localStorage.setItem("username", username);
 
       })
       .catch(err => {

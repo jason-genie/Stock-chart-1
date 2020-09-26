@@ -3,12 +3,23 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { format } from "d3-format";
-
+import { timeFormat } from "d3-time-format";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import {
 	BarSeries,
 	CandlestickSeries,
+	LineSeries,
+	ScatterSeries,
+	CircleMarker,
 } from "react-stockcharts/lib/series";
+import {
+	CrossHairCursor,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
+import {
+	OHLCTooltip,
+} from "react-stockcharts/lib/tooltip";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
@@ -20,7 +31,10 @@ class CandleStickStockScaleChartWithVolumeBarV2 extends React.Component {
 		const { type, data: initialData, width, ratio } = this.props;
 
 		const xScaleProvider = discontinuousTimeScaleProvider
-			.inputDateAccessor(d => d.date);
+			.inputDateAccessor(d => { 
+				const date = new Date(d.datetime);
+				return date;
+			});
 		const {
 			data,
 			xScale,
@@ -49,12 +63,33 @@ class CandleStickStockScaleChartWithVolumeBarV2 extends React.Component {
 				<Chart id={1} yExtents={d => [d.high, d.low]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
+					<MouseCoordinateX
+						at="bottom"
+						orient="bottom"
+						displayFormat={timeFormat("%Y-%m-%d")} />
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={format(".2f")} />
+
 					<CandlestickSeries />
 				</Chart>
 				<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 				</Chart>
+				<Chart id={3} yExtents={d => [(d.high + d.low)/2,  d.AAPLClose, d.GEClose]}>
+					<LineSeries
+						yAccessor={d => d.close}
+						strokeDasharray="" />
+					<ScatterSeries
+						yAccessor={d => d.close}
+						marker={CircleMarker}
+						markerProps={{ r: 3 }} />
+					{/* <OHLCTooltip forChart={1} origin={[-40, 0]}/> */}
+					{/* <CandlestickSeries /> */}
+				</Chart>
+				<CrossHairCursor />
 			</ChartCanvas>
 		);
 	}

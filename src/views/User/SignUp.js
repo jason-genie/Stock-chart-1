@@ -32,6 +32,7 @@ import Button from "components/CustomButtons/Button.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
+import { ToastContainer, toast } from 'react-toastify';
 
 import { authSignup } from "./user_api"
 
@@ -50,8 +51,16 @@ export default function SignUp() {
 
 
     const onSubmit = () => {
-    
+      
+      if((username == '')||(email == '')){
+        toast("Fill the username and email!")
+      }
+      else if((passwordConfirm != password) || (password.length < 8)){
+        toast("Input correct password and over 8 characters");
+      }
+      else{
       authSignup(username, email, password, passwordConfirm);
+      }
       
     };
 

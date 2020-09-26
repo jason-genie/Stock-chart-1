@@ -24,6 +24,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import { Link, withRouter } from "react-router-dom";
 import { authLogin } from "./user_api";
+import { ToastContainer, toast } from 'react-toastify';
 
 import styles from "assets/jss/material-dashboard-react/views/User.js";
 
@@ -36,8 +37,12 @@ export default function Login() {
     const [password, setPassword] = useState('');
 
     const onSubmit = () => {
-
-      authLogin(username, password)    
+      if(username == "" || password == ""){
+        toast("Fill in username and password!");
+      }
+      else{
+        authLogin(username, password);
+      }
       
     };
   return (

@@ -27,12 +27,19 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import { sample as sampleData } from "assets/NASDAQ_20101105";
+import Search from "@material-ui/icons/Search";
+import CustomInput from "components/CustomInput/CustomInput.js";
+import Button from "components/CustomButtons/Button.js";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import { ToastContainer, toast } from 'react-toastify';
 
 import ReactHighcharts from 'react-highcharts';
 
 import Chart from './chart';
 import { getData } from "./utils"
+import { fetchGainers, fetchCompany, fetchChart, fetchSymbol, fetchPrice } from "./ganinerAction";
 
 import { TypeChooser } from "react-stockcharts/lib/helper";
 
@@ -46,110 +53,136 @@ import {
 } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+import loadingSpinner from "assets/img/loading-spinner.gif";
+
+
 
 const useStyles = makeStyles(styles);
+
+const stockScreener = require('@stonksjs/stock-screener');
+const filters = stockScreener.filters;
 
 
 export default function Dashboard() {
   
   const classes = useStyles();
   const [dataPoints1, setDP1] = useState();
-  const [isLoaded, setLoad] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [gainer, setGainer] = useState();
+  const [symbolName, setSymbolName] = useState('');
+  const [symbols, setSymbols] = useState([]);
+  const [temp, setTemp] = useState([]);
 
   useEffect(() => {
-    getData().then(data => {
-      // debugger;
-      setDP1(data);
-		})
+
+    setLoading(true);
+
+    fetchSymbol().then(data => {
+      console.log("data:: ", data);
+      setSymbols(data.map(s=> s.symbol));
+      setLoading(false);
+    });
+
+    fetchPrice("A").then(price => {
+      setDP1(price.candles);
+      setTemp(price.candles);
+      setLoading(false);
+    });
+
   }, []);
 
 
+  function symbolSearch(){
+    // setSymbolName(symbol);
+    var filter, symbol, ul, li, a, i;
+    symbol = document.getElementById("symbolSearch").value;
+    filter = symbol.toUpperCase();
+    ul = document.getElementById("symbolMenu");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("a")[0];
+      if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+
+  function symbolItem(symbol){
+    setLoading(true);
+    document.getElementById("symbolSearch").value = symbol;
+
+    fetchPrice(symbol).then(price => {
+
+      if(price.candles.length == 0){
+        toast("No data about this symbol!")
+      }
+      else{
+        setDP1(price.candles);
+        console.log("success");
+      }
+      setLoading(false);
+    });
+  }
+
+  console.log("chart datapoints: ", dataPoints1);
 
   return (
-    <div>
-      <GridContainer>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="warning" stats icon>
-              <CardIcon color="warning">
-                <Icon>content_copy</Icon>
-              </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
-              <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
-              </h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <Danger>
-                  <Warning />
-                </Danger>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  Get more space
-                </a>
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="success" stats icon>
-              <CardIcon color="success">
-                <Store />
-              </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <DateRange />
-                Last 24 Hours
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="danger" stats icon>
-              <CardIcon color="danger">
-                <Icon>info_outline</Icon>
-              </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <LocalOffer />
-                Tracked from Github
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="info" stats icon>
-              <CardIcon color="info">
-                <Accessibility />
-              </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <Update />
-                Just Updated
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-      </GridContainer>
-        
-      {dataPoints1 && <TypeChooser>
-				{type => <Chart type={type} data={dataPoints1} />}
-			</TypeChooser>}
 
-        
-        
+  
+    <div>
+      {
+      isLoading == true ? (<div className="isLoading"><img src={loadingSpinner} alt="..." /></div>) : (<div></div>)
+      }
+    <Card>
+      <CardHeader color="primary">
+        <h4 className={classes.cardTitleWhite}>Stock chart</h4>
+        <p className={classes.cardCategoryWhite}>
+          {/* Created using Roboto Font Family */}
+        </p>
+      </CardHeader>
+      <CardBody>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={3}>
+            <div className={classes.searchWrapper}>
+              <CustomInput
+                id="symbolSearch"
+                formControlProps={{
+                  className: classes.margin + " " + classes.search
+                }}
+                inputProps={{
+                  placeholder: "Input symbol...",
+                    // inputProps: {
+                    //   "aria-label": "Search"
+                    // },
+                  // value: symbolName,
+                  // onChange: (e) => setSymbolName(e.target.value)
+                }}
+              />
+              <Button onClick={()=>symbolSearch()} color="white" aria-label="edit" justIcon round>
+                <Search />
+              </Button>
+              <List id="symbolMenu" className="search-symbol-list">
+              {
+                symbols.map(symbol => (
+                  <ListItem onClick={()=> symbolItem(symbol)}><a href="#">{symbol}</a></ListItem>
+                ))
+              }
+              </List>
+              </div>
+          </GridItem>
+          <GridItem xs={12} sm={12} md={9}>
+            <div style={{marginTop : "100px"}}>
+              {dataPoints1 && <TypeChooser>
+                {type => <Chart type={type} data={dataPoints1} />}
+              </TypeChooser>}
+            </div>
+          </GridItem>
+        </GridContainer>
+      </CardBody>
+    </Card>
+
     </div>
   );
 }
