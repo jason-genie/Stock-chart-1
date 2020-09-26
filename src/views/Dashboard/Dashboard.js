@@ -71,15 +71,15 @@ export default function Dashboard() {
   const [symbolName, setSymbolName] = useState('A');
   const [symbols, setSymbols] = useState([]);
   const [selecVal, setSelectVal] = useState(0);
-  const [period, setPeriod] = useState('1');
+  const [period, setPeriod] = useState('5');
   const [periodType, setPeriodType] = useState('day');
   const [frequency, setFrequency] = useState('1');
   const [frequencyType, setFrequencyType] = useState('minute');
-  const [initaial] = useState([{perType: "day", period: "1", freType : "minute", frequency: "1"},
-                                {perType: "day", period: "2", freType : "minute", frequency: "30"},
-                                {perType: "year", period: "1", freType : "daily", frequency: "1"},
-                                {perType: "year", period: "1", freType : "weekly", frequency: "1"},
-                                {perType: "year", period: "2", freType : "monthly", frequency: "1"}]);
+  const [initaial] = useState([{perType: "day", period: "5", freType : "minute", frequency: "1"},
+                                {perType: "day", period: "10", freType : "minute", frequency: "30"},
+                                {perType: "year", period: "2", freType : "daily", frequency: "1"},
+                                {perType: "year", period: "15", freType : "weekly", frequency: "1"},
+                                {perType: "year", period: "20", freType : "monthly", frequency: "1"}]);
 
   useEffect(() => {
 
