@@ -15,6 +15,7 @@ import { symbol } from "prop-types";
 
 import { tsvParse, csvParse } from  "d3-dsv";
 import { timeParse } from "d3-time-format";
+import { getStockData } from "./screener_action";
 
 const styles = {
   cardCategoryWhite: {
@@ -76,20 +77,12 @@ export default function TableList() {
       setSymbols(data);
     });
 
-    getData().then(data => {
+    getStockData().then(data => {
       // debugger;
       setStocks(data);
 		})
 
   }, []);
-
-  function getData() {
-    const promiseMSFT = fetch("https://financialmodelingprep.com/api/v3/ratios/AAPL?apikey=demo")
-      .then(response => response.json())
-      
-    // console.log(promiseMSFT);
-    return promiseMSFT;
-  }
 
   console.log(stocks);
 
@@ -104,38 +97,39 @@ export default function TableList() {
             </p> */}
           </CardHeader>
           <CardBody>
+              <div className={classes.searchWrapper}>
+                 <CustomInput
+                   formControlProps={{
+                     className: classes.margin + " " + classes.search
+                   }}
+                   inputProps={{
+                     placeholder: "Search",
+                     inputProps: {
+                       "aria-label": "Search"
+                     }
+                   }}
+                 />
+                 <Button color="white" aria-label="edit" justIcon round>
+                   <Search />
+                </Button>
+              </div>
             <Table
               tableHeaderColor="primary"
               tableHead={[
-                // <div className={classes.searchWrapper}>
-                //   <span>Ticker      </span>
-                //     <CustomInput
-                //       formControlProps={{
-                //         className: classes.margin + " " + classes.search
-                //       }}
-                //       inputProps={{
-                //         placeholder: "Search",
-                //         inputProps: {
-                //           "aria-label": "Search"
-                //         }
-                //       }}
-                //     />
-                //     <Button color="white" aria-label="edit" justIcon round>
-                //       <Search />
-                //     </Button>
-                // </div>, 
                 "Symbol",
-                "date",
-                "CHG%",
-                "CHG",
-                " ",
-                " ",
-                "MKT CAP",
-                "P/E",
-                "EPS(TTM)",]}
+                "Date",
+                "Open",
+                "High",
+                "Low",
+                "Close",
+                "Volume",
+                "Percent",
+                "1W CHG",
+                "1M CHG",
+                "1Y CHG",]}
                 
-              tableData={
-                stocks.map(stock => [stock.symbol, stock.date, stock.assetTurnover, stock.capitalExpenditureCoverageRatio, stock.cashFlowCoverageRatio, stock.FlowToDebtRatio, stock.cashPerShare, stock.cashRatio, stock.companyEquityMultiplier, stock.currentratio])
+              tableData={[]
+                // stocks.map(stock => [stock.symbol, stock.datetime, stock.open, stock.high, stock.cashFlowCoverageRatio, stock.low])
                 // symbols.map(symbol => [symbol, "Niger", "Oud-Turnhout", "$36,738", "Niger", "Niger", "Niger", "Niger", "Niger", "Niger", "Niger"])
               }
             />

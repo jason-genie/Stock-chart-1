@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
 
     'django.contrib.sites',
     'allauth',
@@ -158,3 +159,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
 )
+
+# CRONJOBS = [
+#     ('* * * 1 *', 'stock.cron.my_cron_job')
+# ]

@@ -1,3 +1,6 @@
+import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export function fetchGainers(){
   const data = fetch("https://api.iextrading.com/1.0/stock/market/list/gainers")
@@ -32,4 +35,58 @@ export function fetchPrice(symbol, periodType, period, frequencyType, frequency)
     .then(chart => chart.json())
 
     return price;
+}
+
+export function addPriceAll(){
+  axios
+      .post("http://127.0.0.1:8000/price-history/add/", {
+
+      })
+      .then(res => {
+        toast("Successful!");
+
+      })
+      .catch(err => {
+          toast("Update error!");
+      });
+}
+
+export function addSymbolAction(symbol, volume, high, low, open, datetime){
+  axios
+      .post("http://127.0.0.1:8000/add-symbol/", {
+          symbol: symbol,
+          volume: volume,
+          high: high,
+          low: low,
+          open: open,
+          datetime: datetime
+      })
+      .then(res => {
+        toast("Successful!");
+
+      })
+      .catch(err => {
+          toast("Save error!");
+      });
+}
+
+export function getSymbolList(){
+  
+  const data = fetch("http://127.0.0.1:8000/get-symbollist/").then(chart => chart.json())
+  return data;
+      
+}
+
+export function deleteSymbol(symbol){
+  axios
+    .post("http://127.0.0.1:8000/del-symbol/", {
+        symbol: symbol,
+    })
+    .then(res => {
+      toast("Successful!");
+
+    })
+    .catch(err => {
+        toast("delete error!");
+    });
 }

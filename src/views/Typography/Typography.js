@@ -18,6 +18,10 @@ import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import Chart from '../Dashboard/chart';
 import { getData } from "../Dashboard/utils"
+import GridContainer from "components/Grid/GridContainer";
+import Table from "components/Table/Table.js";
+import CustomInput from "components/CustomInput/CustomInput.js";
+import Button from "components/CustomButtons/Button.js";
 
 const styles = {
   typo: {
@@ -81,21 +85,92 @@ export default function TypographyPage() {
         </p>
       </CardHeader>
       <CardBody>
-        <GridItem xs={12} sm={12} md={6}>
           <Card>
-              <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>Edit </h4>
-                <p className={classes.cardCategoryWhite}>.......... </p>
-              </CardHeader>
-              <CardBody>
-              {dataPoints1 && <TypeChooser>
-                {type => <Chart type={type} data={dataPoints1} />}
-              </TypeChooser>}
+            <CardBody>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={5}>
+                  <Table
+                    tableHeaderColor="primary"
+                    tableHead={[
+                      "Symbol",
+                      "Quantity",
+                      "Entry",
+                      "Price",
+                      "P/L",
+                      "P/L %",]}
+                      
+                    tableData={[
+                      ["Niger", "Oud-Turnhout", "$36,738", "Niger", "Niger", "Niger"]
+                    ]}
+                  />
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                        labelText="Symbol"
+                        id="symbolname"
+                        formControlProps={{
+                          fullWidth: true
+                        }}
+                      //   inputProps={{
+                      //     value: newSymbol,
+                      //     onChange: (e) => setNewSymbol(e.target.value)
+                      // }}
+                      />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={1}></GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                          labelText="Quntity"
+                          id="quantity"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                        //   inputProps={{
+                        //     value: newSymbol,
+                        //     onChange: (e) => setNewSymbol(e.target.value)
+                        // }}
+                        />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={1}></GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <CustomInput
+                          labelText="Entry"
+                          id="entry"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                        //   inputProps={{
+                        //     value: newSymbol,
+                        //     onChange: (e) => setNewSymbol(e.target.value)
+                        // }}
+                        />
+                    </GridItem>
+                  </GridContainer>
+                  <GridContainer>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <Button color="primary">Add New</Button>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={1}></GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <Button color="primary">Delete</Button>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={1}></GridItem>
+                    <GridItem xs={12} sm={12} md={3}>
+                      <Button color="primary">Update </Button>
+                    </GridItem>
+                  </GridContainer>
+                </GridItem>
 
-              </CardBody>
+                <GridItem xs={12} sm={12} md={7}>
+                  {dataPoints1 && <TypeChooser>
+                    {type => <Chart type={type} data={dataPoints1} />}
+                  </TypeChooser>}
+                </GridItem>
+              </GridContainer>
+            </CardBody>
 
           </Card>
-        </GridItem>
+        
       </CardBody>
     </Card>
   );

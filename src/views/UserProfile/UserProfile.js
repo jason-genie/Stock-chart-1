@@ -72,16 +72,16 @@ export default function UserProfile() {
     }
     else{
       updateUser(userId, username, email, firstname, lastname, password);
-      // const username = localStorage.getItem("username");
-      // getUser(username).then(res => {
-      //   setUserid(res.data.id);
-      //   setUsername(res.data.username);
-      //   setEmail(res.data.email);
-      //   setFirstname(res.data.first_name);
-      //   setLastname(res.data.last_name);
-      // })
-      // .catch(err => {
-      // }); 
+      const username = localStorage.getItem("username");
+      getUser(username).then(res => {
+        setUserid(res.data.id);
+        setUsername(res.data.username);
+        setEmail(res.data.email);
+        setFirstname(res.data.first_name);
+        setLastname(res.data.last_name);
+      })
+      .catch(err => {
+      }); 
     }
     
   };

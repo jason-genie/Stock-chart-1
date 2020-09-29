@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from stock.views import UserViewSet
+from stock.views import StockViewSet
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
@@ -26,5 +27,11 @@ urlpatterns = [
     path('userlist/', UserViewSet.list),
     path('current-user/', UserViewSet.current_user),
     path('update-user/', UserViewSet.update_user),
+    path('price-history/add/', StockViewSet.addPriceHistory),
+    path('symbol-list/add/', StockViewSet.addSymbolList),
+    path('add-symbol/', StockViewSet.addSymbol),
+    path('get-symbollist/', StockViewSet.getSymbolList),
+    path('del-symbol/', StockViewSet.deleteSymbol),
+    path('get-stock-screen/', StockViewSet.getStockScreen),
     re_path(r'^.*', TemplateView.as_view(template_name='index.html')),
 ]
