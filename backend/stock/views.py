@@ -73,7 +73,7 @@ class StockViewSet():
 
         for d in data:
             symbolName = d['symbol']
-            historyData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL')
+            historyData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=year&period=1&frequencyType=daily&frequency=1')
             history = historyData.json()
             candles = history['candles']
             if(len(candles)>1):
@@ -166,8 +166,7 @@ class StockViewSet():
 
     @api_view(['POST'])
     def deleteSymbol(request):
-        SymbolList.objects.filter(Q(symbol=request.data['symbol'])).delete()
-        PriceHistory.objects.filter(Q(symbol=request.data['symbol'])).delete()
+        WatchList.objects.filter(Q(symbol=request.data['symbol'])).delete()
         return Response()
 
     @api_view(('GET',))
@@ -175,18 +174,41 @@ class StockViewSet():
         limit = int(request.GET['limit'])
         offset = 0 + (int(request.GET['page']) - 1 ) * limit
         end = int(request.GET['page']) * limit
-        print("hahaha: ", offset, end)
         serializer_context = {
             'request': request,
         }
-        queryset = PriceHistory.objects.all()[offset:end]
+        symbolname = request.GET['search']
+
+        method = request.GET['method']
+
+        d = 'volume'
+        if method == '0':
+            d = '(close - open)/open'
+        elif method == '1':
+            d = 'volume'
+        elif method == '2':
+            d = '(open - close)/(open+1)'
+        elif method == '3':
+            d = '(open - close)/(open-1)'
+        
+        print("method: ", method, d)
+
+        if symbolname != '':
+            queryset = PriceHistory.objects.extra(select={'diff': d}).order_by('datetime', 'diff').filter(Q(symbol=symbolname))[offset:end]
+        else:
+            queryset = PriceHistory.objects.extra(select={'diff': d}).order_by('datetime', 'diff')[offset:end]
         serializer = StockSerializer(instance=queryset, context=serializer_context, many=True)
         return Response(serializer.data)
     
     @api_view(('GET',))
-    def getTotalRecords(self):
+    def getTotalRecords(request):
+        symbolname = request.GET['search']
 
-        queryset = PriceHistory.objects.all().count()
+        if symbolname != '':
+            queryset = PriceHistory.objects.filter(Q(symbol=symbolname)).count()
+        else:
+            queryset = PriceHistory.objects.all().count()
+
         return Response(queryset)
 
 

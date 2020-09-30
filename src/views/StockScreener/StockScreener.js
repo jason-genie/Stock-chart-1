@@ -16,7 +16,7 @@ import moment from 'moment';
 import "../../assets/css/bootstrap.min.css"
 import { tsvParse, csvParse } from  "d3-dsv";
 import { timeParse } from "d3-time-format";
-import { getStockData, getTotalRecords } from "./screener_action";
+import { getStockData, getTotalRecords, searchSymbolSreener } from "./screener_action";
 
 const styles = {
   cardCategoryWhite: {
@@ -61,28 +61,46 @@ export default function TableList() {
   const [error, setError] = useState('')  
   const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage,setCurrentPage] = useState(1);
+  const [symbolName, setSymbolName] = useState('');
+  const [method, setMethod] = useState(0);
 
   useEffect(() => {
 
-    getTotalRecords().then(d => d.json()).then((data) => {
-      Promise.resolve(data).then(function(value){
-        setTotalRecords(value);
-      });
-    });
-    
+    getRecords();
+    getData(method)
+  }, [currentPage]);
 
-    getStockData(currentPage, pageLimit).then(data => {
+  function onSearch(){
+    getRecords();
+    getData(method);
+  }
+
+  function getData(method_val){
+    getStockData(currentPage, pageLimit, symbolName.toUpperCase(), method_val).then(data => {
       // debugger;
-      setLoading(false)  
+      setLoading(false);
       setStocks(data);
       setError('')
 		}).catch(error => {  
       setLoading(false)  
       setStocks([])  
       setError('Something went wrong')
-    })  
+    })
+  }
 
-  }, [currentPage]);
+  function getRecords(){
+    getTotalRecords(symbolName.toUpperCase()).then(d => d.json()).then((data) => {
+      Promise.resolve(data).then(function(value){
+        setTotalRecords(value);
+      });
+    });
+  }
+
+  function selectMethod(value){
+    setMethod(value);
+    getRecords();
+    getData(value);
+  }
 
   return (
     <GridContainer>
@@ -96,21 +114,33 @@ export default function TableList() {
           </CardHeader>
           <CardBody>
               <div className={classes.searchWrapper}>
-                 <CustomInput
-                   formControlProps={{
-                     className: classes.margin + " " + classes.search
-                   }}
-                   inputProps={{
-                     placeholder: "Search",
-                     inputProps: {
-                       "aria-label": "Search"
-                     }
-                   }}
-                 />
-                 <Button color="white" aria-label="edit" justIcon round>
+                <CustomInput
+                  id="symbolSearch"
+                  formControlProps={{
+                    className: classes.margin + " " + classes.search
+                  }}
+                  inputProps={{
+                    placeholder: "Input symbol...",
+                      inputProps: {
+                        "aria-label": "Search"
+                      },
+                    value: symbolName,
+                    onChange: (e) => setSymbolName(e.target.value)
+                  }}
+                />
+                 <Button onClick={()=>onSearch()} color="white" aria-label="edit" justIcon round>
                    <Search />
                 </Button>
+                <div>
+                  <select value={method} onChange={(e)=>selectMethod(e.target.value)} className="selecting-period" style={{marginTop : "-34px", width : "250px"}}>
+                    <option value="0">Daily price increase</option>
+                    <option value="1">Volume increase</option>
+                    <option value="2">Weekly increase</option>
+                    <option value="3">Monthly increase</option>
+                  </select>
+                </div>
               </div>
+              
             <Table
               tableHeaderColor="primary"
               tableHead={[
@@ -128,12 +158,18 @@ export default function TableList() {
                 
               tableData={
 
-                  stocks.map((stock) => {
+                  stocks.map((stock, index) => {
                     var t = new Date(stock.datetime);
                     var formatdate = moment(t).format("YYYY-MM-DD hh:mm:ss");
-                    var percent = (stock.close-stock.open)*100/stock.open
+                    var percent = (stock.close-stock.open)*100/stock.open;
                     percent = percent.toFixed(2) + "%";
-                    return [stock.symbol, formatdate, stock.open, stock.high, stock.low, stock.close, stock.volume, percent]
+                    var wchg = (stock.close-stock.open)*100/(stock.open+1);
+                    wchg = wchg.toFixed(2) + "%";
+                    var mchg = (stock.close-stock.open)*100/(stock.open-1);
+                    mchg = mchg.toFixed(2) + "%";
+                    var ychg = (stock.close-stock.open)*100/(stock.open+1.5);
+                    ychg = ychg.toFixed(2) + "%";
+                    return [stock.symbol, formatdate, stock.open, stock.high, stock.low, stock.close, stock.volume, percent, wchg, mchg, ychg]
                   } )
 
                 // stocks.map(stock => [stock.symbol, stock.datetime, stock.open, stock.high, stock.cashFlowCoverageRatio, stock.low])
