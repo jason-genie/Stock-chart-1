@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from .serializers import UserSerializer, GroupSerializer, SymbolSerializer, StockSerializer
+from .serializers import UserSerializer, GroupSerializer, SymbolSerializer, StockSerializer, WatchSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from stock.models import PriceHistory
 from stock.models import SymbolList
+from stock.models import WatchList
 from django.http import JsonResponse
 import requests
 import json
@@ -84,7 +85,8 @@ class StockViewSet():
                         high = candle['high'],
                         low = candle['low'],
                         open = candle['open'],
-                        datetime = candle['datetime']
+                        datetime = candle['datetime'],
+                        close = candle['close']
                     )
                     price.save()
                 
@@ -108,9 +110,8 @@ class StockViewSet():
     @api_view(['POST'])
     def addSymbol(request):
         symbolName = request.data['symbol']
-        queryset = SymbolList.objects.filter(Q(symbol=symbolName)).distinct()
-        print("queryset::: ", queryset)
-        if queryset:
+        queryset1 = SymbolList.objects.filter(Q(symbol=symbolName)).distinct()
+        if queryset1:
             print("exist")
         else:
             symbol = SymbolList(
@@ -118,16 +119,25 @@ class StockViewSet():
             )
             symbol.save()
 
-        newSymbol = PriceHistory(
-            symbol = request.data['symbol'],
-            volume = request.data['volume'],
-            high = request.data['high'],
-            low = request.data['low'],
-            open = request.data['open'],
-            datetime = request.data['datetime'],
-        )
+        queryset2 = WatchList.objects.filter(Q(symbol=symbolName)).distinct()
+        if queryset2:
+            print("exist")
+        else:
+            watch = WatchList(
+                symbol = request.data['symbol']
+            )
+            watch.save()
 
-        newSymbol.save()
+        # newSymbol = PriceHistory(
+        #     symbol = request.data['symbol'],
+        #     volume = request.data['volume'],
+        #     high = request.data['high'],
+        #     low = request.data['low'],
+        #     open = request.data['open'],
+        #     datetime = request.data['datetime'],
+        # )
+
+        # newSymbol.save()
         return Response()
 
     @api_view(('GET',))
@@ -142,6 +152,18 @@ class StockViewSet():
         serializer = SymbolSerializer(instance=queryset, context=serializer_context, many=True)
         return Response(serializer.data)
 
+    @api_view(('GET',))
+    def getWatchList(self):
+        factory = APIRequestFactory()
+        request = factory.get('/')
+
+        serializer_context = {
+            'request': Request(request),
+        }
+        queryset = WatchList.objects.all()
+        serializer = WatchSerializer(instance=queryset, context=serializer_context, many=True)
+        return Response(serializer.data)
+
     @api_view(['POST'])
     def deleteSymbol(request):
         SymbolList.objects.filter(Q(symbol=request.data['symbol'])).delete()
@@ -149,17 +171,23 @@ class StockViewSet():
         return Response()
 
     @api_view(('GET',))
-    def getStockScreen(self):
-        factory = APIRequestFactory()
-        request = factory.get('/')
-
+    def getStockScreen(request):
+        limit = int(request.GET['limit'])
+        offset = 0 + (int(request.GET['page']) - 1 ) * limit
+        end = int(request.GET['page']) * limit
+        print("hahaha: ", offset, end)
         serializer_context = {
-            'request': Request(request),
+            'request': request,
         }
-        queryset = PriceHistory.objects.all()
+        queryset = PriceHistory.objects.all()[offset:end]
         serializer = StockSerializer(instance=queryset, context=serializer_context, many=True)
         return Response(serializer.data)
     
+    @api_view(('GET',))
+    def getTotalRecords(self):
+
+        queryset = PriceHistory.objects.all().count()
+        return Response(queryset)
 
 
     

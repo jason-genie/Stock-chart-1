@@ -51,15 +51,11 @@ export function addPriceAll(){
       });
 }
 
-export function addSymbolAction(symbol, volume, high, low, open, datetime){
+export function addSymbolAction(symbol){
   axios
       .post("http://127.0.0.1:8000/add-symbol/", {
           symbol: symbol,
-          volume: volume,
-          high: high,
-          low: low,
-          open: open,
-          datetime: datetime
+
       })
       .then(res => {
         toast("Successful!");
@@ -72,7 +68,14 @@ export function addSymbolAction(symbol, volume, high, low, open, datetime){
 
 export function getSymbolList(){
   
-  const data = fetch("http://127.0.0.1:8000/get-symbollist/").then(chart => chart.json())
+  const data = fetch("http://127.0.0.1:8000/get-symbollist/")
+  return data;
+      
+}
+
+export function getWatchList(){
+  
+  const data = fetch("http://127.0.0.1:8000/get-watchlist/")
   return data;
       
 }

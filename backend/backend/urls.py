@@ -31,7 +31,9 @@ urlpatterns = [
     path('symbol-list/add/', StockViewSet.addSymbolList),
     path('add-symbol/', StockViewSet.addSymbol),
     path('get-symbollist/', StockViewSet.getSymbolList),
+    path('get-watchlist/', StockViewSet.getWatchList),
     path('del-symbol/', StockViewSet.deleteSymbol),
     path('get-stock-screen/', StockViewSet.getStockScreen),
+    path('get-total-records/', StockViewSet.getTotalRecords),
     re_path(r'^.*', TemplateView.as_view(template_name='index.html')),
 ]

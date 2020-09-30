@@ -11,11 +11,12 @@ import CardBody from "components/Card/CardBody.js";
 import Search from "@material-ui/icons/Search";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
-import { symbol } from "prop-types";
-
+import Pagination from 'reactjs-hooks-pagination';
+import moment from 'moment';
+import "../../assets/css/bootstrap.min.css"
 import { tsvParse, csvParse } from  "d3-dsv";
 import { timeParse } from "d3-time-format";
-import { getStockData } from "./screener_action";
+import { getStockData, getTotalRecords } from "./screener_action";
 
 const styles = {
   cardCategoryWhite: {
@@ -49,42 +50,39 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-const stockScreener = require('@stonksjs/stock-screener');
-const filters = stockScreener.filters;
-
-
-
-
-// stockScreener(filters[0]).then((response) => {debugger;});
-// const symbols = filters.map(async (filter) => await stockScreener(filter));
-// console.log(symbols);
+const pageLimit = 20;
 
 export default function TableList() {
 
  
   const classes = useStyles();
-  const [symbols, setSymbols] = useState([]);
   const [stocks, setStocks] = useState([]);
+  const [loading, setLoading] = useState(true) 
+  const [error, setError] = useState('')  
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [currentPage,setCurrentPage] = useState(1);
 
   useEffect(() => {
-    Promise.all(filters.map(filter => stockScreener(filter)))
-    .then(symbols => {
-      // setSymbols(symbols);
-      const data = symbols.reduce((cSymbols, symbol) => {
-        return cSymbols.concat(symbol)
-        // return cSymbols
+
+    getTotalRecords().then(d => d.json()).then((data) => {
+      Promise.resolve(data).then(function(value){
+        setTotalRecords(value);
       });
-      setSymbols(data);
     });
+    
 
-    getStockData().then(data => {
+    getStockData(currentPage, pageLimit).then(data => {
       // debugger;
+      setLoading(false)  
       setStocks(data);
-		})
+      setError('')
+		}).catch(error => {  
+      setLoading(false)  
+      setStocks([])  
+      setError('Something went wrong')
+    })  
 
-  }, []);
-
-  console.log(stocks);
+  }, [currentPage]);
 
   return (
     <GridContainer>
@@ -128,11 +126,28 @@ export default function TableList() {
                 "1M CHG",
                 "1Y CHG",]}
                 
-              tableData={[]
+              tableData={
+
+                  stocks.map((stock) => {
+                    var t = new Date(stock.datetime);
+                    var formatdate = moment(t).format("YYYY-MM-DD hh:mm:ss");
+                    var percent = (stock.close-stock.open)*100/stock.open
+                    percent = percent.toFixed(2) + "%";
+                    return [stock.symbol, formatdate, stock.open, stock.high, stock.low, stock.close, stock.volume, percent]
+                  } )
+
                 // stocks.map(stock => [stock.symbol, stock.datetime, stock.open, stock.high, stock.cashFlowCoverageRatio, stock.low])
                 // symbols.map(symbol => [symbol, "Niger", "Oud-Turnhout", "$36,738", "Niger", "Niger", "Niger", "Niger", "Niger", "Niger", "Niger"])
               }
             />
+            <div className="d-flex flex-row py-4 justify-content-end">
+              <Pagination
+                totalRecords={totalRecords}
+                pageLimit={pageLimit}
+                pageRangeDisplayed={1}
+                onChangePage={setCurrentPage}
+              />
+            </div>
           </CardBody>
         </Card>
       </GridItem>

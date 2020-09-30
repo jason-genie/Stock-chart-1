@@ -36,11 +36,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { ToastContainer, toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import ReactHighcharts from 'react-highcharts';
+import { Dropdown } from 'semantic-ui-react'
 
 import Chart from './chart';
 import { getData } from "./utils"
-import { fetchGainers, fetchCompany, fetchChart, fetchSymbol, fetchPrice, addPriceAll, addSymbolAction, getSymbolList, deleteSymbol } from "./ganinerAction";
+import { fetchGainers, fetchCompany, fetchChart, fetchSymbol, fetchPrice, addPriceAll, addSymbolAction, getSymbolList, getWatchList, deleteSymbol } from "./ganinerAction";
 
 import { TypeChooser } from "react-stockcharts/lib/helper";
 
@@ -68,9 +68,10 @@ export default function Dashboard() {
   
   const classes = useStyles();
   const [dataPoints1, setDP1] = useState();
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const [symbolName, setSymbolName] = useState('A');
   const [symbols, setSymbols] = useState([]);
+  const [symbolList, setSymbolList] = useState([])
   const [selecVal, setSelectVal] = useState(0);
   const [period, setPeriod] = useState('5');
   const [periodType, setPeriodType] = useState('day');
@@ -98,7 +99,7 @@ export default function Dashboard() {
     //   setLoading(false);
     // });
 
-    getSymbolList().then(res => {
+    getWatchList().then(chart => chart.json()).then(res => {
       const temp = res.map(s => s.symbol);
       setSymbols(temp);
       setLoading(false)
@@ -109,20 +110,25 @@ export default function Dashboard() {
       setLoading(false);
     });
 
+    getSymbolList().then(chart => chart.json()).then(res => {
+      const temp = res.map(s => s.symbol);
+      setSymbolList(temp);
+    });
+
   }, []);
 
   function addSymbol(){
     const newSymbol = document.getElementById("symbolname").value;
-    const volume = document.getElementById("volume").value;
-    const high = document.getElementById("high").value;
-    const low = document.getElementById("low").value;
-    const open = document.getElementById("open").value;
+    // const volume = document.getElementById("volume").value;
+    // const high = document.getElementById("high").value;
+    // const low = document.getElementById("low").value;
+    // const open = document.getElementById("open").value;
 
-    if(newSymbol == '' || volume == '' || high == '' || low == '' || open == ''){
-      toast("Fill the all inputs!")
+    if(newSymbol == ''){
+      toast("Fill in input!")
     }
     else{
-      addSymbolAction(newSymbol, volume, high, low, open, Date.now());
+      addSymbolAction(newSymbol);
       window.location.reload(false);     
     }
   }
@@ -198,7 +204,7 @@ export default function Dashboard() {
         console.log("error");
       }
       else{
-        console.log("aaa", price.candles);
+        // console.log("aaa", price.candles);
         setDP1(price.candles);
         console.log("success");
       }
@@ -241,11 +247,11 @@ export default function Dashboard() {
                 }}
                 inputProps={{
                   placeholder: "Input symbol...",
-                    // inputProps: {
-                    //   "aria-label": "Search"
-                    // },
-                  // value: symbolName,
-                  // onChange: (e) => setSymbolName(e.target.value)
+                    inputProps: {
+                      "aria-label": "Search"
+                    },
+                  value: symbolName,
+                  onChange: (e) => symbolSearch()
                 }}
               />
               <Button onClick={()=>symbolSearch()} color="white" aria-label="edit" justIcon round>
@@ -266,6 +272,80 @@ export default function Dashboard() {
               }
               </List>
               </div>
+              <GridContainer>
+
+                <GridItem xs={12} sm={12} md={10}>
+                  <CustomInput
+                    labelText="Symbol Name"
+                    id="symbolname"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  //   inputProps={{
+                  //     value: newSymbol,
+                  //     onChange: (e) => setNewSymbol(e.target.value)
+                  // }}
+                  />
+                </GridItem>
+                {/* <GridItem xs={12} sm={12} md={2}>
+                  <CustomInput
+                    labelText="volume"
+                    id="volume"
+                    type="number"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  //   inputProps={{
+                  //     value: volume,
+                  //     onChange: (e) => setVolume(e.target.value)
+                  // }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={2}>
+                  <CustomInput
+                    labelText="high"
+                    id="high"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    type="number"
+                  //   inputProps={{
+                  //     value: high,
+                  //     onChange: (e) => setHigh(e.target.value)
+                  // }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={2}>
+                  <CustomInput
+                    labelText="low"
+                    id="low"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    type="number"
+                  //   inputProps={{
+                  //     value: low,
+                  //     onChange: (e) => setLow(e.target.value)
+                  // }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={2}>
+                  <CustomInput
+                    labelText="open"
+                    id="open"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    type="number"
+                  //   inputProps={{
+                  //     value: open,
+                  //     onChange: (e) => setOpen(e.target.value)
+                  // }}
+                  />
+                </GridItem> */}
+                
+              </GridContainer>
+              <Button color="primary" style={{ float: "right"}} onClick={()=>addSymbol()}>Add Symbol</Button>
           </GridItem>
           <GridItem xs={12} sm={12} md={9}>
             <div>
@@ -284,79 +364,7 @@ export default function Dashboard() {
             </div>
           </GridItem>
         </GridContainer>
-        <GridContainer>
-
-          <GridItem xs={12} sm={12} md={4}>
-            <CustomInput
-              labelText="Symbol Name"
-              id="symbolname"
-              formControlProps={{
-                fullWidth: true
-              }}
-            //   inputProps={{
-            //     value: newSymbol,
-            //     onChange: (e) => setNewSymbol(e.target.value)
-            // }}
-            />
-          </GridItem>
-          <GridItem xs={12} sm={12} md={2}>
-            <CustomInput
-              labelText="volume"
-              id="volume"
-              type="number"
-              formControlProps={{
-                fullWidth: true
-              }}
-            //   inputProps={{
-            //     value: volume,
-            //     onChange: (e) => setVolume(e.target.value)
-            // }}
-            />
-          </GridItem>
-          <GridItem xs={12} sm={12} md={2}>
-            <CustomInput
-              labelText="high"
-              id="high"
-              formControlProps={{
-                fullWidth: true
-              }}
-              type="number"
-            //   inputProps={{
-            //     value: high,
-            //     onChange: (e) => setHigh(e.target.value)
-            // }}
-            />
-          </GridItem>
-          <GridItem xs={12} sm={12} md={2}>
-            <CustomInput
-              labelText="low"
-              id="low"
-              formControlProps={{
-                fullWidth: true
-              }}
-              type="number"
-            //   inputProps={{
-            //     value: low,
-            //     onChange: (e) => setLow(e.target.value)
-            // }}
-            />
-          </GridItem>
-          <GridItem xs={12} sm={12} md={2}>
-            <CustomInput
-              labelText="open"
-              id="open"
-              formControlProps={{
-                fullWidth: true
-              }}
-              type="number"
-            //   inputProps={{
-            //     value: open,
-            //     onChange: (e) => setOpen(e.target.value)
-            // }}
-            />
-          </GridItem>
-        </GridContainer>
-        <Button color="primary" style={{ float: "right"}} onClick={()=>addSymbol()}>Add Symbol</Button>
+        
 
       </CardBody>
     </Card>
