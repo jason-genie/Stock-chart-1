@@ -1,0 +1,1123 @@
+hi!
+the totalhi portfolio value is not displayed in the chart.
+I displayed individual symbol chart
+
+no. in this page, it hsould be the total value of the portfolio.
+
+
+you mean total price?
+
+yes
+
+for example, portfolio 3, it should be:
+
+200* AAPL current price + 150* QCOM price. 
+
+in chart, only total price displaye?
+
+yes, in this Portfolio page, it should be only the total price of the selected portfolio.
+
+yes, next
+this test db
+now stoing all db, it takes long time
+
+i don't get it. 
+
+as you said, I stored hourly/ weekly/monthly//.....
+how about daily?
+
+too
+
+ok. 
+
+the stock screening calculations should be done in the background. 
+
+yes, I did
+
+how often is this calculation done?
+
+once per day? or once per hour?
+
+wha? I don't get it
+
+for example, every day in the morning at 8AM or 6PM in the evening, it'll:
+1. get new stock price data and store in db
+2. run  the stock screener algorithm in the background to get the top stocks.  
+
+as you said, when login.
+
+this should be done in cron job!
+is there any cron job configured?
+
+yes
+
+both stock screener and portfolio need to use cron job. 
+
+yeah, I made this cron job in back end side
+
+
+how to enable the cron job? and configure its time interval?
+
+every day,you can configure
+
+what do you mean? why every day?
+
+it should run automatically at the server!
+
+i don't need to configure it everyday. 
+
+no, everyday, you can get new data
+
+can you show me the cron job?
+
+oh, no , this is in code
+
+
+i know. show me the code pls. 
+
+
+see?
+
+i can see that! 
+nothing is done in cron job yet. 
+
+it needs to: 
+
+1. for stock screener: 
+a. everyday, it should get new stock data for all symbols. 
+b. based on new stock data, run all the stock screening methods and store the top stocks
+
+2. every hour: for the portfolio, it should calculate the total portfolio price for each portfolio. Send alert emails if the price is reduced by like 5%. 
+
+in the existing cron job, it only gets the symbol list! i don't understand. this symbol list should be stored in our own db now. 
+why still get it from website
+
+now, I made this to comment 
+
+
+I think that it is no urgent problem/
+I will do this.
+
+
+right. this is just some small thing that is missing. some small improvement. 
+
+
+can i take a look at the code where the stock screening methods are implemented?
+
+yes
+
+
+
+see?
+
+
+let me take a quick look. 
+
+
+i couldn't see the six methods
+
+this is UI. 
+
+i mean, the algorithm p
+
+
+do you know react?
+
+no. 
+
+see
+i don't get it here. why it's running in js?
+
+also, i still don't see the algorithm yet. 
+
+what algorithm?
+
+
+
+
+the six algorithms. the price/volume change, and sort based on this
+
+
+justa seec
+
+see?
+
+just a sec. 
+
+
+do you know this ?
+
+
+
+it seems easy to read. just a min 
+let me take a quick look. 
+
+none of these methods are correctly implemented. 
+
+
+Daily:
+price change:  today's price/ the price of yesterday
+
+volume change:  today's volume/ the volume of yesterday
+
+
+
+Weekly:
+price change:  this week's price/ the price of last week
+
+volume change:  this week's volume/ the volume of last week. 
+
+here, please do it this way:
+
+
+this data is past year.
+
+
+there's something wrong here. 
+
+
+what is  wrong?
+
+
+
+just a sec. let me explain. 
+
+this implementation is not convenient to add new screening method. 
+of course, the existing methods are all wrong. 
+
+let me explain. this is important. 
+
+for each symbol, we need to process its historic price 
+
+so, it should go through each symbol one by one, and then process its daily price 
+
+
+here, i can see that, it's based on bulk processing of db. 
+
+these data are correctly data from api/
+
+why from api??
+it should be from db!!
+
+for stock screening, it should read from db. 
+
+of course, these are form db.
+and these stored in db from api..
+just a sec. 
+
+is this views.py running in the backend?
+
+yes
+then it should return list of symbols to frontend
+
+yes
+
+it should just return list of symbols that is read from db!
+
+in the db, it should store the top symbols for each screening method. 
+
+
+what are the top symbols?
+doyou have this list?
+
+
+
+the top symbols that are generated from the stock screening methods!
+
+in each method, it will sort all stocks according to their metric, and get the top 50 stocks!
+
+these 50 stocks are "top symbols" for each method!
+let me explain further. 
+
+suppose there are 3500 stock symbols in total. 
+each symbol has 20000 data records
+
+for each stock, we need to go through the 20000 data records, and calculate its ranking score. 
+
+for the 3500 stocks, we will get 3500 ranking scores. 
+
+then, we only need 50 stocks with the highest ranking scores. 
+
+
+method 1: 
+ranking score = hourly price change in perent
+
+I did....!!!
+
+
+
+this calculation method is correctly
+
+
+no. this is wrong. what is close? what's open here? 
+price change values!
+
+no. i mean, what's the close here? what's the open here? 
+
+open price, and close price
+
+
+obvoiusly this is wrong. 
+
+we need to compare two close prices on the current day, and the day before. 
+
+and we may compare, the close price of the current day, against the average close price in the past seven days. 
+
+
+
+just a sec
+then you  mean , instead of open price
+hi!
+the way this is calculated is not proper here. 
+pls use another way. 
+here, for each stock, pls store its price history in an array! or list. 
+
+then, use the for loop to go through all price/volume in the list. 
+
+then you can calculate the ranking score for this stock. 
+
+I did this above.
+where is the array?
+
+
+did yo install navicat?
+why?
+
+to view db file.
+
+why should i read db file? 
+
+i mean, store the array in a variable in python. 
+
+then we can process this variable. 
+
+sorry. not store. but load stock data in db and store it in a variable. 
+
+yeah
+
+this val is stock data arra
+
+
+good!
+
+then it's easy. 
+
+
+is this "stocks " for a particu
+
+yes
+
+in this case, it should also calculate the stock ranking score for each stock. 
+
+this can be done like this. 
+
+
+add variables like. 
+
+stock.method1score
+stock.method2score
+stock.method3score
+stock.method4score
+stock.method5score
+stock.method6score
+
+
+ust a sec
+
+you said that method are only to sort stock data, no?
+
+it's to sort based on the processing result of stock data! not directly on stock data. 
+
+see the first method. 
+
+
+methd 1: daily data (price change percentage)
+method 2: daily data (volume change percentage)
+method 3: weekly data (volume change percent)
+method 4: hourly data (price)
+
+method 5: weekly data (price)
+method 6: hourly data (volume)
+
+]]
+
+ageust aa sec
+
+price change percentage  = (open - close)/open
+wrONG!!!
+???
+
+price change percentage   =  (today's  price     - close price of yesterday ) / close price of yesterday. 
+
+hey, yesterday? this data is not yesterday data.!
+
+see, this is misunderstanding!
+
+for each stock, it should have its historical data! for example, it should have data for the past two years!
+
+
+for example, see this chart?
+
+it's the price and vlumne chart for AAPL stock. 
+
+see this daily chart?
+
+the price today is 101
+
+the price yesterday is 100. 
+
+so, the price change daily = (101-100)/ 100 = 1%
+
+
+now, the price one week ago is: 96
+so, the price weekly change is: (101-96)/96=5%
+
+
+
+now, you see? 
+
+I know that
+but, in sotck screener, it display stock history data
+no yesterday, last week!!!!
+
+as i said, it should store all the historical data (yesterday, last week, last month, even last year) in db!!
+
+yeah, I did. 
+
+for example this ABIO is 9.16 data
+why?
+it should have data for ABIO for the last two years!!
+it's not a singled day!!
+yes
+
+
+just a sec. let me show you how the stock data should be stored. 
+
+see? this is the table for store the daily price for all stocks.  
+
+see? 
+
+
+
+and then, in the daily cron job, it should get the latest data for all symbols and store it at the end of the table. 
+
+so, this table will keep on growing as time goes. 
+
+now, I want to know calculation method...
+
+
+
+methd 1: daily data (price change percentage)
+
+
+method 2: daily data (volume change percentage)
+
+method 3: weekly data (volume change percent)
+
+
+method 4: hourly data (price)
+
+method 5: weekly data (price)
+
+
+method 6: hourly d
+
+
+
+let me write them here? 
+just a sec
+Iknow this aboveI wnat
+
+
+I want to know example for thisABIO
+
+how about AAPL?
+
+ok
+
+this data,.  
+
+good! this is enough data. it's hourly data. 
+
+hourly price change:
+
+
+Sort(rank_score);
+
+Top_Stock_List = rank_score(1:50);
+
+Returne Top_Stock_List;
+
+
+
+then , there are many AAPL data
+
+
+, 	, so, there are many AAPL rankin gscore too.
+why? there's only one score for AAPL for every day. 
+
+you mean that get top _stock _list fo every day?
+
+at the end of every day, we run the cron job!
+then for this particular day, there's one score for AAPL! 
+right?
+basically, here, we want to find the stocks that have the biggest price grow for this particular day!
+
+for example, today, AAPL's price is increased by 10%
+QCOM is increased by: 20%. 
+INTL is increased by: -5%..
+See? then, we want: QCOM, AAPL. 
+
+you are right
+then, why do last year  stock dat need?
+
+good question! we may implement other methods! so better store last year data.
+
+for example, we may want to do back testing!
+this will be future work. 
+
+for example, we want to go through from last year, and see for each day the top stocks. then, we can see how it performs after it's listed as top stock. 
+
+besides, we may implmement other screening method. 
+
+for example, the price or volume change is based on the average price in the past two months. 
+
+so, these historical data needs to be in the database. 
+
+as time goes by, our db should store all daily data for all symbols. 
+
+makes sense?
+
+we may implement some other more advanced stock screening methods. 
+in these methods, it may need to calculate the standard deviation of the stock price/ volume in the past two years. 
+these standard deviation will be used in calculating the final score. for example, use this method:
+
+
+For AAPL: 
+current_volume = ( 401855+230052 ) /2;
+old_volume = (271892+ 381675)/2;
+change = current_volume- old_volume;
+change_perc= change/standard_deviation; 
+rank_score=change_perc;
+
+
+use this???
+yes. 
+
+
+
+see? in this case, the standard_deviation may be based on data in the past two years. 
+
+
+so, standard_deviation = o
+
+see? this is the formula. 
+it can be based on data in the past week, or past one year, or two years. 
+
+so the data in the past two years need to be stored in our db. 
+
+yeah I already stored .
+good!
+now, it should be clear?
+
+and where does the top stock list used?
+
+just display them. 
+
+on this Stock Screener page, you can add the table, called
+
+"Top Stock List", it should display the top 50 stocks.
+
+see this screen shot?  it lists top 20 stocks according to its ranking score. 
+
+clear now?
+
+yeah, I need time to understand  exactly.
+take your time. let me know if you have ot
+
+
+this fix is complex. ;(
+
+
+complex???
+come on. how about this?
+can you isolate the method? i can implement the method. 
+
+I can
+
+
+here's what i need and provide
+
+I'll provide you the list of top stocks. and you display. 
+
+i'll provide you the function that returns this top stock.
+
+ok?
+
+no need, I will try 
+
+ok. then make sure: pls write the function that process the stock historical price to get the top stocks in an independent function!
+
+then it's easier to iimplement more methods in the future. 
+
+
+
+
+
+
+I have a question.
+ok?
+to sort stock data,  use  price chagne percentage?
+
+we have six methods already. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+method 6: hourly data (volume)
+
+For AAPL: 
+current_volume = ( 401855+230052 ) /2;
+old_volume = (271892+ 381675)/2;
+change = current_volume- old_volume;
+change_perc= change/old_volume; 
+rank_score=change_perc;
+
+
+
+methd 1: daily data (price change percentage)
+
+
+method 2: daily data (volume change percentage)
+
+method 3: weekly data (volume change percent)
+
+
+method 5: weekly data (price)
+
+
+is this correct?
+
+
+
+yes. this is for hourly data. it's based on hourly history price. 
+
+now, let me see daily data. 
+Very good! i can see that the historical price has been stored
+
+
+
+
+i see
+then where did you see this method?
+method is not imiplemented yet obvoiusly. 
+
+I think it seems no  correctly.
+let me now explain this daily metric?
+
+this same with hourly, no?
+yes, same. 
+
+then, where does racking score use?
+ok. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+methd 1: daily data (price change percentage)
+
+
+// in this method, it'll calculate the top stocks for the particular date, "current_date", using METHOD_1
+//	The stockdata should store daily/hourly/weekly prices for all stocks listed in "symbol_list" 
+//
+StockScreenMethods( stockdata , symbol_list, METHOD_1, current_date){
+
+Case: METHOD_1
+  For ith stock in symbol_list
+	current_price = ( 401855+230052 ) /2;
+	old_price = (271892+ 381675)/2;
+	change = current_price- old_price;
+	change_perc= change/old_price; 
+	rank_score[i]=change_perc;
+
+  end
+	top_stock_list = Sort(rank_score)->get(1:50);
+	return top_stock_list; 
+
+
+Case: METHOD_2
+	....
+}
+
+here , current_price is  today open price??
+this is a method! when you call this method, you can pass in today's date! then it'll return the top stocks for today!
+
+
+
+current_price is the current stock price. 
+I mean, open price, close price????
+
+
+close price of the day. 
+
+yes
+
+then, where dose standard_deviation used? 
+this is another method!
+
+here, i'm discussing method 1!
+
+
+
+
+
+
+
+
+method 2: daily data (volume change percentage)
+
+For ith stock in all_stock_list
+	current_volume = ( 401855+230052 ) /2;
+	old_volume = (271892+ 381675)/2;
+	change = current_volume- old_volume;
+	change_perc= change/old_volume; 
+	rank_score[i]=change_perc;
+
+end
+	top_stock_list = Sort(rank_score)->get(1:50);
+
+
+method 3: weekly data (volume change percent)
+
+For ith stock in all_stock_list
+	current_volume = ( 401855+230052 ) /2;
+	old_volume = (271892+ 381675)/2;
+	change = current_volume- old_volume;
+	change_perc= change/old_volume; 
+	rank_score[i]=change_perc;
+
+end
+	top_stock_list = Sort(rank_score)->get(1:50);
+
+
+method 4: hourly data (price)
+
+method 5: weekly data (price)
+
+
+method 6: hourly d
+
+
+
+methd 7: daily data (normalized price change percentage)
+
+
+// in this method, it'll calculate the top stocks for the particular date, "current_date", using METHOD_1
+//	The stockdata should store daily/hourly/weekly prices for all stocks listed in "symbol_list" 
+//
+StockScreenMethods( stockdata , symbol_list, METHOD_1, current_date){
+
+Case: METHOD_1
+  For ith stock in symbol_list
+	current_price = ( 401855+230052 ) /2;
+	old_price = (271892+ 381675)/2;
+	change = current_price- old_price;
+	change_perc= change/standard_deviation; 
+	rank_score[i]=change_perc;
+
+  end
+	top_stock_list = Sort(rank_score)->get(1:50);
+	return top_stock_list; 
+
+
+Case: METHOD_2
+	....
+}
+
+see? this one. then, this method's usage?
+
+it's also used to get the top stock. 
+
+difference between them.
+when use these  individually?
+
+these are just different methods. they will provide different top stocks. 
+
+
+just display them on the top stock table. 
+
+
+no, two lists?
+
+
+what do you mean two lists?
+top stock 
+
+for each method, it should return one list
+
+then , there are 7  methods??
+
+yes. so, stored 7 lists in db. just display them on the top stock table when user chooses the method. 
+
+along time goes, top stock list will be change..
+
+exactly! it should change every day! in the cron job. 
+
+in the daily cron job, it should get the new data from API. 
+then, it should run these 7 methods again to get the new top stock list. 
+
+so it's updated every day. 
+
+so, your requirements changed 
+
+it's not changed, you just didn't understand the meaning of stock screening from the beginning. 
+this is common sense for screening stocks. 
+you didn't mention method 7
+
+ok. then don't implement method 7. leave it as future work. 
+
+I will do all .
+
+here, my point is, we need to do it correctly. so that we may implement different methods. 
+yeah,
+
+for other problem, before this , I should get milestone of scrrner and portfolio.
+these two are almost done. pls fix these discussed issues. 
+
+screener: 1. correct implementation of the stock screening methods. Make sure to implement according to this interface:
+
+// in this method, it'll calculate the top stocks for the particular date, "current_date", using METHOD_1
+//	The stockdata should store daily/hourly/weekly prices for all stocks listed in "symbol_list" 
+//
+StockScreenMethods( stockdata , symbol_list, METHOD_1, current_date){
+
+Case: METHOD_1
+  For ith stock in symbol_list
+	current_price = ( 401855+230052 ) /2;
+	old_price = (271892+ 381675)/2;
+	change = current_price- old_price;
+	change_perc= change/standard_deviation; 
+	rank_score[i]=change_perc;
+
+  end
+	top_stock_list = Sort(rank_score)->get(1:50);
+	return top_stock_list; 
+
+
+Case: METHOD_2
+	....
+}
+
+
+
+portfolio: 2. it should display total price of the portfolio. 3. send email alerts when  portfolio price is changed, as shown in the spec.
+
+
+
+If you send advance, I will complete.
+
+come on. pls complete at least one of these two milestones before this. this is common sense.
+
+anyway, let me know when it's ready. 
+
+
+I thinks it will takes time.
+
+as i said, i can help with implementing that method. pls do this: 
+
+you can leave this function empty, and i'll implement the methods inside. 
+
+but, you need to pass in the parameters correctly. and i'll return the list of top stocks. 
+see? Use this API pls.  
+
+
+// in this method, it'll calculate the top stocks for the particular date, "current_date", using METHOD_1
+//	The stockdata should store daily/hourly/weekly prices for all stocks listed in "symbol_list" 
+// Input: stockdata, all historical data for the selected duration, wheter hourly, or daily, or weekly  
+// 		  duration: hourly/daily/weekly/monthly
+// 		  symbol_list: the complete list of symbols  
+//        METHOD: 1/2/../7, any integer for selecting the method.  
+//		  current_date: the current date where the stock is sorted. the date should be inside the range of stockdata.
+
+
+// Output: top_stock_list. 
+
+StockScreenMethods( stockdata, duration, symbol_list, METHOD, current_date){
+
+	return top_stock_list; 
+}
+
+
+is this clear? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
