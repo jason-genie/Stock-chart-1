@@ -35,5 +35,12 @@ urlpatterns = [
     path('del-symbol/', StockViewSet.deleteSymbol),
     path('get-stock-screen/', StockViewSet.getStockScreen),
     path('get-total-records/', StockViewSet.getTotalRecords),
+    path('get-portfolio/', StockViewSet.getPortfolioList),
+    path('get-portfolio-symbol/', StockViewSet.getPortfolioSymbolList),
+    path('add-portfolio/', StockViewSet.addPortfolio),
+    path('add-portfolio-symbol/', StockViewSet.addPortfolioSymbol),
+    path('update-portfolio-symbol/', StockViewSet.updatePortfolioSymbol),
+    path('del-portfolio-symbol/', StockViewSet.deletePortfolioSymbol),
+    path('del-portfolio/', StockViewSet.deletePortfolio),
     re_path(r'^.*', TemplateView.as_view(template_name='index.html')),
 ]

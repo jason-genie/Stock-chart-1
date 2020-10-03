@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from .serializers import UserSerializer, GroupSerializer, SymbolSerializer, StockSerializer, WatchSerializer
+from .serializers import UserSerializer, GroupSerializer, SymbolSerializer, StockSerializer, WatchSerializer, PortfolioSerializer, PortfolioSymbolSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-from stock.models import PriceHistory
+from stock.models import PriceHistory, HourlyPriceHistory, DailyPriceHistory, WeeklyPriceHistory, MonthlyPriceHistory, PortfolioList, PortfolioSymbolList
 from stock.models import SymbolList
 from stock.models import WatchList
 from django.http import JsonResponse
@@ -73,22 +73,78 @@ class StockViewSet():
 
         for d in data:
             symbolName = d['symbol']
-            historyData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=year&period=1&frequencyType=daily&frequency=1')
-            history = historyData.json()
-            candles = history['candles']
-            if(len(candles)>1):
-                for candle in candles:
-                    # print(symbolName, candle['volume'])
-                    price  = PriceHistory(
-                        symbol = symbolName,
-                        volume = candle['volume'],
-                        high = candle['high'],
-                        low = candle['low'],
-                        open = candle['open'],
-                        datetime = candle['datetime'],
-                        close = candle['close']
-                    )
-                    price.save()
+            HourlyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=day&period=10&frequencyType=minute&frequency=30')
+            hourlyhistory = HourlyhistoryData.json()
+            print(hourlyhistory)
+            if 'candles' in hourlyhistory.keys() :
+                hourlycandles = hourlyhistory['candles']
+                if(len(hourlycandles)>1):
+                    for candle in hourlycandles:
+                        # print(symbolName, candle['volume'])
+                        hourlyprice  = HourlyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        hourlyprice.save()
+
+            DailyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=month&period=2&frequencyType=daily&frequency=1')
+            Dailyhistory = DailyhistoryData.json()
+            if 'candles' in Dailyhistory.keys() :
+                dailycandles = Dailyhistory['candles']
+                if(len(dailycandles)>1):
+                    for candle in dailycandles:
+                        # print(symbolName, candle['volume'])
+                        dailyprice  = DailyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        dailyprice.save()
+
+            WeeklyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=month&period=6&frequencyType=weekly&frequency=1')
+            Weeklyhistory = WeeklyhistoryData.json()
+            if 'candles' in Weeklyhistory.keys() :
+                weeklycandles = Weeklyhistory['candles']
+                if(len(weeklycandles)>1):
+                    for candle in weeklycandles:
+                        # print(symbolName, candle['volume'])
+                        weeklyprice  = WeeklyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        weeklyprice.save()
+
+            MonthlyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=year&period=1&frequencyType=monthly&frequency=1')
+            Monthlyhistory = MonthlyhistoryData.json()
+            if 'candles' in Monthlyhistory.keys() :
+                monthlycandles = Monthlyhistory['candles']
+                if(len(monthlycandles)>1):
+                    for candle in monthlycandles:
+                        # print(symbolName, candle['volume'])
+                        monthlyprice  = MonthlyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        monthlyprice.save()
                 
         return Response()
 
@@ -181,38 +237,151 @@ class StockViewSet():
 
         method = request.GET['method']
 
-        d = 'volume'
         if method == '0':
-            d = '(close - open)/open'
+            if symbolname != '':
+                queryset = HourlyPriceHistory.objects.extra(select={'diff': '(close-open)/open'}).order_by('datetime', 'diff').filter(Q(symbol=symbolname))[offset:end]
+            else:
+                queryset = HourlyPriceHistory.objects.extra(select={'diff': '(close-open)/open'}).order_by('datetime', 'diff')[offset:end]
         elif method == '1':
-            d = 'volume'
+            if symbolname != '':
+                queryset = HourlyPriceHistory.objects.order_by('datetime', 'volume').filter(Q(symbol=symbolname))[offset:end]
+            else:
+                queryset = HourlyPriceHistory.objects.order_by('datetime', 'volume')[offset:end]
         elif method == '2':
-            d = '(open - close)/(open+1)'
+            if symbolname != '':
+                queryset = DailyPriceHistory.objects.extra(select={'diff': '(close-open)/open'}).order_by('datetime', 'diff').filter(Q(symbol=symbolname))[offset:end]
+            else:
+                queryset = DailyPriceHistory.objects.extra(select={'diff': '(close-open)/open'}).order_by('datetime', 'diff')[offset:end]
         elif method == '3':
-            d = '(open - close)/(open-1)'
-        
-        print("method: ", method, d)
+            if symbolname != '':
+                queryset = DailyPriceHistory.objects.order_by('datetime', 'volume').filter(Q(symbol=symbolname))[offset:end]
+            else:
+                queryset = DailyPriceHistory.objects.order_by('datetime', 'volume')[offset:end]
+        elif method == '4':
+            if symbolname != '':
+                queryset = WeeklyPriceHistory.objects.extra(select={'diff': '(close-open)/open'}).order_by('datetime', 'diff').filter(Q(symbol=symbolname))[offset:end]
+            else:
+                queryset = WeeklyPriceHistory.objects.extra(select={'diff': '(close-open)/open'}).order_by('datetime', 'diff')[offset:end]
+        elif method == '5':
+            if symbolname != '':
+                queryset = WeeklyPriceHistory.objects.order_by('datetime', 'volume').filter(Q(symbol=symbolname))[offset:end]
+            else:
+                queryset = WeeklyPriceHistory.objects.order_by('datetime', 'volume')[offset:end]
 
-        if symbolname != '':
-            queryset = PriceHistory.objects.extra(select={'diff': d}).order_by('datetime', 'diff').filter(Q(symbol=symbolname))[offset:end]
-        else:
-            queryset = PriceHistory.objects.extra(select={'diff': d}).order_by('datetime', 'diff')[offset:end]
+        # if symbolname != '':
+        #     queryset = PriceHistory.objects.extra(select={'diff': d}).order_by('datetime', 'diff').filter(Q(symbol=symbolname))[offset:end]
+        # else:
+        #     queryset = PriceHistory.objects.extra(select={'diff': d}).order_by('datetime', 'diff')[offset:end]
         serializer = StockSerializer(instance=queryset, context=serializer_context, many=True)
         return Response(serializer.data)
     
     @api_view(('GET',))
     def getTotalRecords(request):
         symbolname = request.GET['search']
+        method = request.GET['method']
 
-        if symbolname != '':
-            queryset = PriceHistory.objects.filter(Q(symbol=symbolname)).count()
-        else:
-            queryset = PriceHistory.objects.all().count()
+        if method == '0':
+            if symbolname != '':
+                queryset = HourlyPriceHistory.objects.filter(Q(symbol=symbolname)).count()
+            else:
+                queryset = HourlyPriceHistory.objects.all().count()
+        elif method == '1':
+            if symbolname != '':
+                queryset = HourlyPriceHistory.objects.filter(Q(symbol=symbolname)).count()
+            else:
+                queryset = HourlyPriceHistory.objects.all().count()
+        elif method == '2':
+            if symbolname != '':
+                queryset = DailyPriceHistory.objects.filter(Q(symbol=symbolname)).count()
+            else:
+                queryset = DailyPriceHistory.objects.all().count()
+        elif method == '3':
+            if symbolname != '':
+                queryset = DailyPriceHistory.objects.filter(Q(symbol=symbolname)).count()
+            else:
+                queryset = DailyPriceHistory.objects.all().count()
+        elif method == '4':
+            if symbolname != '':
+                queryset = WeeklyPriceHistory.objects.filter(Q(symbol=symbolname)).count()
+            else:
+                queryset = WeeklyPriceHistory.objects.all().count()
+        elif method == '5':
+            if symbolname != '':
+                queryset = WeeklyPriceHistory.objects.filter(Q(symbol=symbolname)).count()
+            else:
+                queryset = WeeklyPriceHistory.objects.all().count()
+
 
         return Response(queryset)
 
+    @api_view(('GET',))
+    def getPortfolioList(self):
+        factory = APIRequestFactory()
+        request = factory.get('/')
 
-    
+        serializer_context = {
+            'request': Request(request),
+        }
+        queryset = PortfolioList.objects.all()
+        serializer = PortfolioSerializer(instance=queryset, context=serializer_context, many=True)
+        return Response(serializer.data)
 
 
 
+    @api_view(('GET',))
+    def getPortfolioSymbolList(request):
+        portfolio = request.GET['portfolio']
+        serializer_context = {
+            'request': request,
+        }
+        queryset = PortfolioSymbolList.objects.filter(Q(portfolio=portfolio))
+        serializer = PortfolioSymbolSerializer(instance=queryset, context=serializer_context, many=True)
+        return Response(serializer.data)
+
+    @api_view(['POST'])
+    def addPortfolio(request):
+        portfolio = request.data['portfolio']
+
+        queryset = PortfolioList.objects.filter(Q(portfolio=portfolio)).distinct()
+        if queryset:
+            print("exist")
+        else:
+            data = PortfolioList(
+                portfolio = request.data['portfolio']
+            )
+            data.save()
+
+        return Response()
+
+    @api_view(['POST'])
+    def addPortfolioSymbol(request):
+
+        data = PortfolioSymbolList(
+            portfolio = request.data['portfolio'],
+            symbol = request.data['symbol'],
+            quantity = request.data['quantity'],
+            entry = request.data['entry'],
+        )
+        data.save()
+
+        return Response()
+
+    @api_view(['POST'])
+    def updatePortfolioSymbol(request):
+        queryset = PortfolioSymbolList.objects.get(id=request.data['id'])
+        queryset.symbol = request.data['symbol']
+        queryset.quantity = request.data['quantity']
+        queryset.entry = request.data['entry']
+        queryset.save()
+        return Response()
+
+    @api_view(['POST'])
+    def deletePortfolioSymbol(request):
+        PortfolioSymbolList.objects.filter(Q(id=request.data['id'])).delete()
+        return Response()
+
+    @api_view(['POST'])
+    def deletePortfolio(request):
+        PortfolioList.objects.filter(Q(portfolio=request.data['portfolio'])).delete()
+        PortfolioSymbolList.objects.filter(Q(portfolio=request.data['portfolio'])).delete()
+        return Response()

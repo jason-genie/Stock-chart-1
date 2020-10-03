@@ -1,38 +1,19 @@
 import React, { useState, useEffect } from "react";
 // react plugin for creating charts
-import ChartistGraph from "react-chartist";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
-import Icon from "@material-ui/core/Icon";
-// @material-ui/icons
-import Store from "@material-ui/icons/Store";
-import Warning from "@material-ui/icons/Warning";
-import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
-import Update from "@material-ui/icons/Update";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
-import AccessTime from "@material-ui/icons/AccessTime";
-import Accessibility from "@material-ui/icons/Accessibility";
-import BugReport from "@material-ui/icons/BugReport";
-import Code from "@material-ui/icons/Code";
-import Cloud from "@material-ui/icons/Cloud";
+
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Tasks from "components/Tasks/Tasks.js";
-import CustomTabs from "components/CustomTabs/CustomTabs.js";
-import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
 import Search from "@material-ui/icons/Search";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import { ToastContainer, toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -44,14 +25,6 @@ import { fetchGainers, fetchCompany, fetchChart, fetchSymbol, fetchPrice, addPri
 
 import { TypeChooser } from "react-stockcharts/lib/helper";
 
-
-import { bugs, website, server } from "variables/general.js";
-
-import {
-  dailySalesChart,
-  emailsSubscriptionChart,
-  completedTasksChart
-} from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import loadingSpinner from "assets/img/loading-spinner.gif";
@@ -70,8 +43,9 @@ export default function Dashboard() {
   const [dataPoints1, setDP1] = useState();
   const [isLoading, setLoading] = useState(false);
   const [symbolName, setSymbolName] = useState('A');
+  const [newSymbol, setNewSymbol] = useState('');
   const [symbols, setSymbols] = useState([]);
-  const [symbolList, setSymbolList] = useState([])
+  const [symbolList, setSymbolList] = useState([]);
   const [selecVal, setSelectVal] = useState(0);
   const [period, setPeriod] = useState('5');
   const [periodType, setPeriodType] = useState('day');
@@ -118,7 +92,7 @@ export default function Dashboard() {
   }, []);
 
   function addSymbol(){
-    const newSymbol = document.getElementById("symbolname").value;
+    // const newSymbol = document.getElementById("symbolname").value;
     // const volume = document.getElementById("volume").value;
     // const high = document.getElementById("high").value;
     // const low = document.getElementById("low").value;
@@ -128,7 +102,7 @@ export default function Dashboard() {
       toast("Fill in input!")
     }
     else{
-      addSymbolAction(newSymbol);
+      addSymbolAction(newSymbol.toUpperCase());
       window.location.reload(false);     
     }
   }
@@ -281,10 +255,10 @@ export default function Dashboard() {
                     formControlProps={{
                       fullWidth: true
                     }}
-                  //   inputProps={{
-                  //     value: newSymbol,
-                  //     onChange: (e) => setNewSymbol(e.target.value)
-                  // }}
+                    inputProps={{
+                      value: newSymbol,
+                      onChange: (e) => setNewSymbol(e.target.value.toUpperCase())
+                  }}
                   />
                 </GridItem>
                 {/* <GridItem xs={12} sm={12} md={2}>

@@ -2,13 +2,6 @@ import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import Quote from "components/Typography/Quote.js";
-import Muted from "components/Typography/Muted.js";
-import Primary from "components/Typography/Primary.js";
-import Info from "components/Typography/Info.js";
-import Success from "components/Typography/Success.js";
-import Warning from "components/Typography/Warning.js";
-import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
@@ -29,8 +22,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import { confirmAlert } from 'react-confirm-alert';
 import { func } from "prop-types";
-import { addNewSymbol, updateSymbol } from "./action";
+import { fetchPrice, addNewSymbolAction, updateSymbolAction, addPortfolioAction, getPortfolioList, getPortfolioSymbolList, getSymbolDataAction, deletePortfolioSymbol, deletePortfolio } from "./action";
+import { forEachChild } from "typescript";
  
 const styles = {
   typo: {
@@ -77,22 +72,63 @@ export default function TypographyPage() {
   const [dataPoints1, setDP1] = useState();
   const [isLoaded, setLoad] = useState(false);
   const [symbol, setSymbol] = useState('');
-  const [symbolID, setSymbolID] = useState('');
+  const [symbolID, setSymbolID] = useState();
   const [quantity, setQuantity] = useState('');
   const [entry, setEntry] = useState('');
   const [newPortfolio, setNewPortfolio] = useState('');
   const [portfolios, setPortfolios] = useState([]);
+  const [selPortfolio, setSelPortfolio] = useState('');
+  const [symbolList, setSymbolList] = useState([]);
+  const [symbolData, setSymbolData] = useState([]);
 
   const classes = useStyles();
   useEffect(() => {
-    getData().then(data => {
-      // debugger;
-      setDP1(data);
-		})
+ 
+    getPortfolios();
+    
   }, []);
 
-  function rawHandle(){
+  function getPortfolios(){
+    getPortfolioList().then(data => data.json()).then(res => {
+      setPortfolios(res);
+      setSelPortfolio(res[0].portfolio);
+      getSymbolData(res[0].portfolio);
+  
+    });
+  }
+
+  function getSymbolData(portfolio_name){
+    getPortfolioSymbolList(portfolio_name).then(data => data.json()).then(res => {
+      setSymbolList(res);
+      if(res.length > 0){
+        fetchPrice(res[0].symbol).then(price => {
+          setDP1(price.candles);
+        });
+      }
+     
+      let symData = [];
+      res.map((d) => {
+        getSymbolDataAction(d.symbol).then(d => d.json()).then((data) => {
+          Promise.resolve(data).then((value) => {
+            symData.push(value);  
+            if(res.length == symData.length){
+              setSymbolData(symData);
+            }        
+          });
+        });
+      })
+    });
+  }
+
+  function rawHandle(symbol_data){
     console.log("table raw click~~");
+    setSymbolID(symbol_data.id);
+    setSymbol(symbol_data.symbol);
+    setQuantity(symbol_data.quantity);
+    setEntry(symbol_data.entry);
+    fetchPrice(symbol_data.symbol).then(price => {
+      setDP1(price.candles);
+    });
   }
 
   function newClick(){
@@ -100,7 +136,13 @@ export default function TypographyPage() {
       toast("Fill in the all inputs!");
     }
     else{
-      addNewSymbol(symbol, quantity, entry);
+      addNewSymbolAction(selPortfolio, symbol, quantity, entry).then(res => {
+        toast("Successful!");
+        getSymbolData(selPortfolio);
+      })
+      .catch(err => {
+          toast("Save error!");
+      });
     }
   }
 
@@ -109,7 +151,14 @@ export default function TypographyPage() {
       toast("Fill in the all inputs!");
     }
     else{
-      updateSymbol(symbolID, symbol, quantity, entry);
+      updateSymbolAction(symbolID, symbol, quantity, entry).then(res => {
+        toast("Successful!");
+        getSymbolData(selPortfolio);
+    
+      })
+      .catch(err => {
+          toast("Save error!");
+      });;
     }
   }
 
@@ -119,11 +168,71 @@ export default function TypographyPage() {
     }
     else{
       console.log(newPortfolio);
+      addPortfolioAction(newPortfolio).then(res => {
+        toast("Successful!");
+        getPortfolioList().then(data => data.json()).then(res => {
+          setPortfolios(res);
+        });
+      })
+      .catch(err => {
+          toast("Save error!");
+      });;
     }
   }
 
-  function delSymbol(){
+  function delSymbol(symbol_id){
     console.log("delete");
+
+    confirmAlert({
+      title: 'Confirm to submit',
+      message: 'Are you sure to do this.',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            deletePortfolioSymbol(symbol_id).then(res => {
+              toast("Successful!");
+              getSymbolData(selPortfolio);
+            })
+            .catch(err => {
+                toast("delete error!");
+            });
+          }
+        },
+        {
+          label: 'No',
+        }
+      ]
+    });
+  }
+
+  function selectSelPortfolio(sel_portfolio){
+    setSelPortfolio(sel_portfolio);
+    getSymbolData(sel_portfolio);
+  }
+
+  function delPortfolio(){
+    confirmAlert({
+      title: 'Confirm to submit',
+      message: 'Are you sure to do this.',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            deletePortfolio(selPortfolio).then(res => {
+              toast("Successful!");
+              getPortfolios();
+            })
+            .catch(err => {
+                toast("delete error!");
+            });
+          }
+        },
+        {
+          label: 'No',
+        }
+      ]
+    });
   }
   
   return (
@@ -138,7 +247,7 @@ export default function TypographyPage() {
                 
                 <GridItem xs={12} sm={12} md={6} style={{marginTop : '-50px'}}>
                       <CustomInput
-                          labelText="Portfoliio"
+                          labelText="Portfoliio name"
                           id="portfolio"
                           formControlProps={{
                             fullWidth: true
@@ -149,16 +258,14 @@ export default function TypographyPage() {
                         }}
                         />
                         <Button color="primary" onClick={()=>addPortfolio()}>Add</Button>
+                        <Button color="warning" onClick={()=>delPortfolio()}>Delete</Button>
 
-                      <select className="selecting-period" style={{marginTop : '9px'}}>
+                      <select value={selPortfolio} className="selecting-period" onChange={(e)=>selectSelPortfolio(e.target.value)} style={{marginTop : '9px'}}>
                         {
                           portfolios.map((portfolio) => {
                             return(
-                            <><option value="0">minute</option>
-                            <option value="1">hourly</option>
-                            <option value="2">daily</option>
-                            <option value="3">weekly</option>
-                            <option value="4">monthly</option></>
+                            <><option value={portfolio.portfolio}>{portfolio.portfolio} 
+                            </option></>
                             );
                           })
                         }
@@ -178,15 +285,39 @@ export default function TypographyPage() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow onClick={()=>rawHandle()}>
-                          <TableCell>Symbol</TableCell>
-                          <TableCell>Quantity</TableCell>
-                          <TableCell>Entry</TableCell>
-                          <TableCell>Price</TableCell>
-                          <TableCell>P/L</TableCell>
-                          <TableCell>P/L(%)</TableCell>
-                          <TableCell><span onClick={()=>delSymbol()} class="material-icons" style={{cursor : "pointer"}}>delete</span></TableCell>
-                        </TableRow>
+                        {
+                          symbolList && symbolData.length > 0 && symbolList.map((sym, index) => {
+                            // let data = symbolData[index];
+                            var price = 0;
+                            // if ( data && data[Object.keys(data)[0]]){
+                            //   price = data[Object.keys(data)[0]].lastPrice;
+                            //   console.log(Object.keys(data)[0]);
+                            // }
+
+                            symbolData.forEach((data) => {
+                              if(Object.keys(data)[0] == sym.symbol){
+                                price = data[Object.keys(data)[0]].lastPrice;
+                              }
+                            })
+                            var pl = (price-sym.entry)*sym.quantity;
+                            pl = pl.toFixed(2); 
+                            var plper = (price-sym.entry)/sym.entry*100;
+                            plper = plper.toFixed(2);
+                            // console.log(data, index);
+                            return(
+                              <TableRow onClick={()=>rawHandle(sym)}>
+                              <TableCell>{sym.symbol}</TableCell>
+                              <TableCell>{sym.quantity}</TableCell>
+                              <TableCell>{sym.entry}</TableCell>
+                              <TableCell>{price}</TableCell>
+                              <TableCell>{pl}</TableCell>
+                              <TableCell>{plper}%</TableCell>
+                              <TableCell><span onClick={()=>delSymbol(sym.id)} class="material-icons" style={{cursor : "pointer"}}>delete</span></TableCell>
+                            </TableRow>
+                            );
+                          })
+                        }
+                        
                     </TableBody>
                   </Table>
                   
@@ -200,7 +331,7 @@ export default function TypographyPage() {
                         }}
                         inputProps={{
                           value: symbol,
-                          onChange: (e) => setSymbol(e.target.value)
+                          onChange: (e) => setSymbol(e.target.value.toUpperCase())
                       }}
                       />
                     </GridItem>
@@ -249,7 +380,7 @@ export default function TypographyPage() {
                   </GridContainer>
                 </GridItem>
 
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem xs={12} sm={12} md={6} style={{marginTop : "70px"}}>
                   {dataPoints1 && <TypeChooser>
                     {type => <Chart type={type} data={dataPoints1} />}
                   </TypeChooser>}

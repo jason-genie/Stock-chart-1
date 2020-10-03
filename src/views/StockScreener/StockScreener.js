@@ -14,9 +14,7 @@ import Button from "components/CustomButtons/Button.js";
 import Pagination from 'reactjs-hooks-pagination';
 import moment from 'moment';
 import "../../assets/css/bootstrap.min.css"
-import { tsvParse, csvParse } from  "d3-dsv";
-import { timeParse } from "d3-time-format";
-import { getStockData, getTotalRecords, searchSymbolSreener } from "./screener_action";
+import { getStockData, getTotalRecords, searchSymbolSreener, getLastPrice } from "./screener_action";
 
 const styles = {
   cardCategoryWhite: {
@@ -63,15 +61,18 @@ export default function TableList() {
   const [currentPage,setCurrentPage] = useState(1);
   const [symbolName, setSymbolName] = useState('');
   const [method, setMethod] = useState(0);
+  const [wchg, setWchg] = useState([]);
+  const [mchg, setMchg] = useState([]);
+  const [ychg, setYchg] = useState([]);
 
   useEffect(() => {
 
-    getRecords();
+    getRecords(method);
     getData(method)
-  }, [currentPage]);
+  }, [currentPage, method]);
 
   function onSearch(){
-    getRecords();
+    getRecords(method);
     getData(method);
   }
 
@@ -80,6 +81,51 @@ export default function TableList() {
       // debugger;
       setLoading(false);
       setStocks(data);
+      var wtime = Date.now()-7*24*3600000;
+      var mtime = Date.now()-30*24*3600000;
+      var ytime = Date.now()-365*24*3600000;
+      let wdata = [];
+      let mdata = [];
+      let ydata = [];
+
+      // data.map((stock) => {
+      //   getLastPrice(stock.symbol, wtime).then((data) =>{
+      //     Promise.resolve(data).then((value) => {
+      //         if(value.candles) {
+      //           wdata.push(value.candles[0]);
+      //         }
+             
+      //         if(wdata.length == pageLimit){
+      //           setWchg(wdata);
+      //         }
+      //     });
+      //   });
+
+      //   getLastPrice(stock.symbol, mtime).then((data) =>{
+      //     Promise.resolve(data).then((value) => {
+              
+      //         if(value.candles){
+      //           mdata.push(value.candles[0]);
+      //         }
+      //         if(mdata.length == pageLimit){
+      //           setMchg(mdata);
+      //         }
+      //     });
+      //   });
+
+      //   // getLastPrice(stock.symbol, ytime).then((data) =>{
+      //   //   Promise.resolve(data).then((value) => {
+      //   //       if(value.candles){
+      //   //         ydata.push(value.candles[0]);
+      //   //       }
+             
+      //   //       if(ydata.length == pageLimit){
+      //   //         setYchg(ydata);
+      //   //       }
+      //   //   });
+      //   // });
+      // })
+       
       setError('')
 		}).catch(error => {  
       setLoading(false)  
@@ -88,8 +134,8 @@ export default function TableList() {
     })
   }
 
-  function getRecords(){
-    getTotalRecords(symbolName.toUpperCase()).then(d => d.json()).then((data) => {
+  function getRecords(method_val){
+    getTotalRecords(symbolName.toUpperCase(), method_val).then(d => d.json()).then((data) => {
       Promise.resolve(data).then(function(value){
         setTotalRecords(value);
       });
@@ -98,9 +144,11 @@ export default function TableList() {
 
   function selectMethod(value){
     setMethod(value);
-    getRecords();
+    getRecords(value);
     getData(value);
   }
+
+  // console.log("++++++", wchg, mchg, ychg);
 
   return (
     <GridContainer>
@@ -133,10 +181,12 @@ export default function TableList() {
                 </Button>
                 <div>
                   <select value={method} onChange={(e)=>selectMethod(e.target.value)} className="selecting-period" style={{marginTop : "-34px", width : "250px"}}>
-                    <option value="0">Daily price increase</option>
-                    <option value="1">Volume increase</option>
-                    <option value="2">Weekly increase</option>
-                    <option value="3">Monthly increase</option>
+                    <option value="0">Hourly price increase</option>
+                    <option value="1">Hourly volume increase</option>
+                    <option value="2">Daily price increase</option>
+                    <option value="3">Daily volume increase</option>
+                    <option value="4">Weekly price increase</option>
+                    <option value="5">Weekly volume increase</option>
                   </select>
                 </div>
               </div>
@@ -152,9 +202,7 @@ export default function TableList() {
                 "Close",
                 "Volume",
                 "Percent",
-                "1W CHG",
-                "1M CHG",
-                "1Y CHG",]}
+                ]}
                 
               tableData={
 
@@ -163,13 +211,18 @@ export default function TableList() {
                     var formatdate = moment(t).format("YYYY-MM-DD hh:mm:ss");
                     var percent = (stock.close-stock.open)*100/stock.open;
                     percent = percent.toFixed(2) + "%";
-                    var wchg = (stock.close-stock.open)*100/(stock.open+1);
-                    wchg = wchg.toFixed(2) + "%";
-                    var mchg = (stock.close-stock.open)*100/(stock.open-1);
-                    mchg = mchg.toFixed(2) + "%";
-                    var ychg = (stock.close-stock.open)*100/(stock.open+1.5);
-                    ychg = ychg.toFixed(2) + "%";
-                    return [stock.symbol, formatdate, stock.open, stock.high, stock.low, stock.close, stock.volume, percent, wchg, mchg, ychg]
+
+                    // var wchg_per = ''
+                    // if(wchg[index]){
+                    //   wchg_per = wchg[index].open;
+                    // }
+                    
+                    // var mchg_per = '';
+                    // if(mchg[index]){
+                    //   mchg_per = mchg[index].open;
+                    // }
+
+                    return [stock.symbol, formatdate, stock.open, stock.high, stock.low, stock.close, stock.volume, percent]
                   } )
 
                 // stocks.map(stock => [stock.symbol, stock.datetime, stock.open, stock.high, stock.cashFlowCoverageRatio, stock.low])

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from stock.models import PriceHistory
 from stock.models import SymbolList
-from stock.models import WatchList
+from stock.models import WatchList, PortfolioList, PortfolioSymbolList
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,3 +29,13 @@ class WatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = WatchList
         fields = ['id', 'symbol']
+
+class PortfolioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioList
+        fields = ['id', 'portfolio']
+
+class PortfolioSymbolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioSymbolList
+        fields = ['id', 'portfolio', 'symbol', 'quantity', 'entry']
