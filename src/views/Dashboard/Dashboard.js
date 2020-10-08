@@ -107,7 +107,7 @@ export default function Dashboard() {
     }
   }
 
-
+  
   function symbolSearch(){
     // setSymbolName(symbol);
     var filter, symbol, ul, li, a, i;

@@ -21,8 +21,8 @@ export const authLogin = (username, password) => {
         window.location.assign('/dashboard');
       })
       .catch(err => {
-        toast(err);
-    });
+        toast("Error sign in!");
+      });
   
   };
 
@@ -40,6 +40,7 @@ export const authLogin = (username, password) => {
         .then(res => {
           const token = res.data.key;
           const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+          localStorage.setItem("username", username);
           localStorage.setItem("token", token);
           localStorage.setItem("expirationDate", expirationDate);
           toast("Successful!");
@@ -47,7 +48,7 @@ export const authLogin = (username, password) => {
 
         })
         .catch(err => {
-            toast(err);
+            toast("Error sing up!");
         });
 
   };

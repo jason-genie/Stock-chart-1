@@ -15,6 +15,8 @@ from django.http import JsonResponse
 import requests
 import json
 from django.db.models import Q
+from datetime import datetime
+from time import time
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -384,4 +386,89 @@ class StockViewSet():
     def deletePortfolio(request):
         PortfolioList.objects.filter(Q(portfolio=request.data['portfolio'])).delete()
         PortfolioSymbolList.objects.filter(Q(portfolio=request.data['portfolio'])).delete()
+        return Response()
+
+    @api_view(('GET',))
+    def addCurrentPrice(self):
+        end = int(time()*1000)
+        start = end - 200000000
+        print(start, end)
+        res = requests.get('https://api.iextrading.com/1.0/ref-data/symbols')
+        data = res.json()
+
+        for d in data:
+            symbolName = d['symbol']
+            HourlyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=day&period=1&frequencyType=minute&frequency=30&endDate={end}&startDate={start}')
+            hourlyhistory = HourlyhistoryData.json()
+            print(hourlyhistory)
+            if 'candles' in hourlyhistory.keys() :
+                hourlycandles = hourlyhistory['candles']
+                if(len(hourlycandles)>1):
+                    for candle in hourlycandles:
+                        # print(symbolName, candle['volume'])
+                        hourlyprice  = HourlyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        hourlyprice.save()
+
+            DailyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=month&period=1&frequencyType=daily&frequency=1&endDate={end}&startDate={start}')
+            Dailyhistory = DailyhistoryData.json()
+            if 'candles' in Dailyhistory.keys() :
+                dailycandles = Dailyhistory['candles']
+                if(len(dailycandles)>1):
+                    for candle in dailycandles:
+                        # print(symbolName, candle['volume'])
+                        dailyprice  = DailyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        dailyprice.save()
+
+            WeeklyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=month&period=1&frequencyType=weekly&frequency=1&endDate={end}')
+            Weeklyhistory = WeeklyhistoryData.json()
+            if 'candles' in Weeklyhistory.keys() :
+                weeklycandles = Weeklyhistory['candles']
+                if(len(weeklycandles)>1):
+                    for candle in weeklycandles:
+                        # print(symbolName, candle['volume'])
+                        weeklyprice  = WeeklyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        weeklyprice.save()
+
+            MonthlyhistoryData = requests.get(f'https://api.tdameritrade.com/v1/marketdata/{symbolName}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=year&period=1&frequencyType=monthly&frequency=1&endDate={end}')
+            Monthlyhistory = MonthlyhistoryData.json()
+            if 'candles' in Monthlyhistory.keys() :
+                monthlycandles = Monthlyhistory['candles']
+                if(len(monthlycandles)>1):
+                    for candle in monthlycandles:
+                        # print(symbolName, candle['volume'])
+                        monthlyprice  = MonthlyPriceHistory(
+                            symbol = symbolName,
+                            volume = candle['volume'],
+                            high = candle['high'],
+                            low = candle['low'],
+                            open = candle['open'],
+                            datetime = candle['datetime'],
+                            close = candle['close']
+                        )
+                        monthlyprice.save()
+                
         return Response()

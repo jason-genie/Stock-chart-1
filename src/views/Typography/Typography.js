@@ -80,45 +80,116 @@ export default function TypographyPage() {
   const [selPortfolio, setSelPortfolio] = useState('');
   const [symbolList, setSymbolList] = useState([]);
   const [symbolData, setSymbolData] = useState([]);
+  const [symbols, setSymbols] = useState([]);
 
   const classes = useStyles();
   useEffect(() => {
- 
     getPortfolios();
     
   }, []);
 
   function getPortfolios(){
-    getPortfolioList().then(data => data.json()).then(res => {
+    getPortfolioList().then((data) => data.json()).then((res, index) => {
       setPortfolios(res);
-      setSelPortfolio(res[0].portfolio);
-      getSymbolData(res[0].portfolio);
+      // console.log("res: ", res);
+      if(selPortfolio == ''){
+        setSelPortfolio(res[0].portfolio);
+        getSymbolData(res[0].portfolio);
+      }
+      else{
+        setSelPortfolio(selPortfolio);
+        getSymbolData(selPortfolio);
+      }
   
     });
   }
 
+  function drawChart(d_symbols, d_symbolList){
+    var datapoint = [];
+    console.log(d_symbols);
+    console.log("list: ", d_symbolList);
+    d_symbols.forEach((sym, index) => {
+        var point = [];
+        if(sym){
+          sym.forEach((data)=>{
+            var cell = {};
+            for(let[key, value] of Object.entries(data)){
+              if(key == 'datetime'){
+                cell[key] = value;
+              }
+              else{
+                cell[key] = value * d_symbolList[index].quantity;
+              }
+
+            }
+            point.push(cell)
+          })
+        }
+        if(datapoint.length > 0){
+          if(point){
+            point.forEach((data, index)=>{
+              for(let[key, value] of Object.entries(data)){
+                if(key == 'datetime'){
+                  datapoint[index][key] = value;
+                }
+                else{
+                  datapoint[index][key] += value;
+                }
+  
+              }
+            })
+          }
+        }
+        else{
+          datapoint = point;
+        }
+        
+        // datapoint.push(point);
+      })
+      console.log("datapoint: ", datapoint);
+      if(datapoint.length > 0){
+        setDP1(datapoint);
+      }
+
+  }
+
   function getSymbolData(portfolio_name){
     getPortfolioSymbolList(portfolio_name).then(data => data.json()).then(res => {
-      setSymbolList(res);
-      if(res.length > 0){
-        fetchPrice(res[0].symbol).then(price => {
-          setDP1(price.candles);
-        });
-      }
-     
+      var temp = [];
       let symData = [];
-      res.map((d) => {
-        getSymbolDataAction(d.symbol).then(d => d.json()).then((data) => {
-          Promise.resolve(data).then((value) => {
-            symData.push(value);  
-            if(res.length == symData.length){
-              setSymbolData(symData);
-            }        
+      if(res.length > 0){
+        setSymbolList(res);
+        res.map((symbol_data)=>{
+          fetchPrice(symbol_data.symbol).then(symbol_data => symbol_data.json()).then(price => {
+            Promise.resolve(price).then((value)=>{
+              temp.push(value.candles);  
+              if(res.length == temp.length){
+                setSymbols(temp);
+                drawChart(temp, res);
+              }
+            });
           });
-        });
-      })
+
+          getSymbolDataAction(symbol_data.symbol).then(symbol_data => symbol_data.json()).then((data) => {
+            Promise.resolve(data).then((value) => {
+              symData.push(value);  
+              if(res.length == symData.length){
+                setSymbolData(symData);
+              }        
+            });
+          });
+          
+        })
+      }
+      else{
+        setSymbolList([]);
+        setSymbols([]);
+        setDP1();
+      }
     });
+
   }
+
 
   function rawHandle(symbol_data){
     console.log("table raw click~~");
@@ -126,9 +197,9 @@ export default function TypographyPage() {
     setSymbol(symbol_data.symbol);
     setQuantity(symbol_data.quantity);
     setEntry(symbol_data.entry);
-    fetchPrice(symbol_data.symbol).then(price => {
-      setDP1(price.candles);
-    });
+    // fetchPrice(symbol_data.symbol).then(price => {
+    //   setDP1(price.candles);
+    // });
   }
 
   function newClick(){
@@ -234,7 +305,8 @@ export default function TypographyPage() {
       ]
     });
   }
-  
+
+
   return (
     <Card>
       <CardHeader color="primary">

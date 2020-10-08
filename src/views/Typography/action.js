@@ -81,7 +81,7 @@ export function deletePortfolio(portfolio){
 
 export function fetchPrice(symbol){
     const price = fetch(`https://api.tdameritrade.com/v1/marketdata/${symbol}/pricehistory?apikey=3QHTM7LKNUIAI4IMI3ITKSL37YRFKFUL&periodType=month&period=2&frequencyType=daily&frequency=1`)
-    .then(chart => chart.json())
+    
 
     return price;
 }
