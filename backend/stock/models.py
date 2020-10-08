@@ -96,3 +96,4 @@ class PortfolioSymbolList(models.Model):
 
    class Meta:
       db_table = "portfolio_symbol_list"  
+      

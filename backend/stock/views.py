@@ -18,6 +18,7 @@ from django.db.models import Q
 from datetime import datetime
 from time import time
 
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.

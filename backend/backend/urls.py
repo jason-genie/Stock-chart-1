@@ -44,4 +44,5 @@ urlpatterns = [
     path('del-portfolio/', StockViewSet.deletePortfolio),
     path('add-current-price/', StockViewSet.addCurrentPrice),
     re_path(r'^.*', TemplateView.as_view(template_name='index.html')),
+    
 ]
